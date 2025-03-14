@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class MainTest {
+public class SergeyTest {
 
     @Test
     public void testSum() throws InterruptedException {
@@ -22,7 +22,7 @@ public class MainTest {
         WebElement textBox = driver.findElement(By.id("my-text-id"));
         WebElement submitButton = driver.findElement(By.tagName("button"));
 
-        textBox.sendKeys("Selenium12SAz zxc");
+        textBox.sendKeys("Selenium");
         submitButton.click();
 
         Thread.sleep(1000);
