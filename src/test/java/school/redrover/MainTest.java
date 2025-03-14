@@ -22,7 +22,7 @@ public class MainTest {
         WebElement textBox = driver.findElement(By.id("my-text-id"));
         WebElement submitButton = driver.findElement(By.tagName("button"));
 
-        textBox.sendKeys("Selenium123");
+        textBox.sendKeys("Selenium12SAz zxc");
         submitButton.click();
 
         Thread.sleep(1000);
