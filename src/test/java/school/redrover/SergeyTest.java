@@ -12,7 +12,7 @@ import static org.testng.Assert.assertEquals;
 public class SergeyTest {
 
     @Test
-    public void testSum() throws InterruptedException {
+    public void testExample() throws InterruptedException {
         WebDriverManager.chromedriver().setup();
 
         WebDriver driver = new ChromeDriver();
