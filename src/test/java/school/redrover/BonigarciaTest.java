@@ -12,7 +12,7 @@ import java.util.List;
 public class BonigarciaTest {
 
     @Test
-    void testChapterSize(){
+    void testChaptersSize(){
 
         final String BASE_URL = "https://bonigarcia.dev/selenium-webdriver-java/";
         WebDriver driver = new ChromeDriver();
