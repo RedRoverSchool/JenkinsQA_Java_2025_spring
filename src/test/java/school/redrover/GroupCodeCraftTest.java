@@ -10,6 +10,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -368,6 +369,21 @@ public class GroupCodeCraftTest {
         WebElement submit = driver.findElement(By.tagName("button"));
         submit.click();
         driver.navigate().back();
+
+    }
+
+    @Test
+    public void testBonigarciaWebFormXpath (){
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
+        driver.findElement(By.xpath("//div/a[@href='web-form.html']")).click();
+        WebElement header = driver.findElement(By.xpath("//h1[@class='display-6']"));
+        String headerText = header.getText();
+
+        Assert.assertEquals(headerText, "Web form");
+
+        //xpath
+        WebElement textInputByXpath = driver.findElement(By.xpath("//input[@name='my-text']"));
+        textInputByXpath.sendKeys("Adelya");
 
     }
 }
