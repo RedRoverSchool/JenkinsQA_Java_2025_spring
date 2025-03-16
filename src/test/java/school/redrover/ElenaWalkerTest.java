@@ -4,13 +4,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-import static org.testng.Assert.assertEquals;
 
-public class ElenaWalker {
+public class ElenaWalkerTest {
     @Test
     public void FisrtTest(){
 
@@ -20,7 +20,7 @@ public class ElenaWalker {
         driver.get("https://www.selenium.dev/selenium/web/web-form.html");
 
         String title = driver.getTitle();
-        assertEquals("Web form", title);
+        Assert.assertEquals(title,"Web form" );
 
         WebElement textBox = driver.findElement(By.name("my-text"));
         WebElement submitButton = driver.findElement(By.cssSelector("button"));
@@ -30,7 +30,7 @@ public class ElenaWalker {
 
         WebElement message = driver.findElement(By.id("message"));
         String value = message.getText();
-        assertEquals("Received!", value);
+        Assert.assertEquals(value,"Received!" );
 
         driver.quit();
     }
