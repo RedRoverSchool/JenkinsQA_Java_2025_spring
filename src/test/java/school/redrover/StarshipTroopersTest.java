@@ -54,4 +54,9 @@ public class StarshipTroopersTest {
         Assert.assertEquals(result2,"ALEX@IVANOV.COM");
     }
 
+
+    @Test
+    public void testBadTest () {
+        Assert.assertEquals(22,2);
+    }
 }
