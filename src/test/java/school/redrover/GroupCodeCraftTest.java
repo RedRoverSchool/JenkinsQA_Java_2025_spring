@@ -1,5 +1,7 @@
 package school.redrover;
 
+import net.datafaker.Faker;
+import net.datafaker.providers.base.Text;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -14,12 +16,12 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
 import java.io.File;
 import java.io.IOException;
-import net.datafaker.Faker;
-import net.datafaker.providers.base.Text;
 import java.time.Duration;
 import java.util.Locale;
+
 import static net.datafaker.providers.base.Text.*;
 import static org.testng.Assert.*;
 
@@ -166,16 +168,15 @@ public class GroupCodeCraftTest {
         driver.get("https://demoqa.com");
 
 
-
         WebElement card = driver.findElement
-                        (By.xpath("//div[1][@class='card mt-4 top-card']"));
+                (By.xpath("//div[1][@class='card mt-4 top-card']"));
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", card);
 
         card.click();
 
         WebElement element = driver.findElement
-                        (By.xpath("//div[@class='element-list collapse show']/descendant::li[@id='item-0']"));
+                (By.xpath("//div[@class='element-list collapse show']/descendant::li[@id='item-0']"));
 
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 
@@ -398,15 +399,15 @@ public class GroupCodeCraftTest {
         String password = faker.text().text(Text.TextSymbolsBuilder.builder()
                 .len(14)
                 .with(EN_UPPERCASE, 3)
-                .with(EN_LOWERCASE,4)
-                .with(DEFAULT_SPECIAL,2)
+                .with(EN_LOWERCASE, 4)
+                .with(DEFAULT_SPECIAL, 2)
                 .with(DIGITS, 3).build());
 
         driver.get("https://magento.softwaretestingboard.com/");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         WebElement acceptCookies = driver.findElement(By.className("css-1n36tvh"));
-        if(acceptCookies.isDisplayed()) {
+        if (acceptCookies.isDisplayed()) {
             acceptCookies.click();
         }
         WebElement createAccount = wait.until
@@ -538,13 +539,13 @@ public class GroupCodeCraftTest {
 
         WebElement text = driver.findElement(By.xpath("/html/head/title"));
         String getText = text.getText();
-        Assert.assertEquals(getText,"Welcome to Apache Maven – Maven");
+        Assert.assertEquals(getText, "Welcome to Apache Maven – Maven");
 
         driver.quit();
     }
 
     @Test
-    public void testBonigarciaWebFormXpath (){
+    public void testBonigarciaWebFormXpath() throws InterruptedException {
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
         driver.findElement(By.xpath("//div/a[@href='web-form.html']")).click();
         WebElement header = driver.findElement(By.xpath("//h1[@class='display-6']"));
@@ -552,9 +553,41 @@ public class GroupCodeCraftTest {
 
         Assert.assertEquals(headerText, "Web form");
 
-        //xpath
-        WebElement textInputByXpath = driver.findElement(By.xpath("//input[@name='my-text']"));
-        textInputByXpath.sendKeys("Adelya");
+        WebElement textInput = driver.findElement(By.xpath("//input[@name='my-text']"));
+        textInput.sendKeys("Adelya");
+
+        WebElement passwordInput = driver.findElement(By.xpath("//input[@name='my-password']"));
+        passwordInput.sendKeys("12345678");
+
+        WebElement textareaInput = driver.findElement(By.xpath("//textarea[@name='my-textarea']"));
+        textareaInput.sendKeys("something important");
+
+        WebElement disabledInput = driver.findElement(By.xpath("//input[@placeholder='Disabled input']"));
+        assertFalse(disabledInput.isEnabled());
+
+        WebElement dropDownSelect = driver.findElement(By.xpath("//select"));
+        Select openThisSelectMenu = new Select(dropDownSelect);
+        openThisSelectMenu.selectByVisibleText("Three");
+
+        WebElement readonlyInput = driver.findElement(By.xpath("//input[@value='Readonly input']"));
+        String readonlyText = readonlyInput.getAttribute("value");
+        Assert.assertEquals(readonlyText, "Readonly input");
+
+        WebElement DropdownDataList = driver.findElement(By.xpath("//input[@list='my-options']"));
+        DropdownDataList.sendKeys("Saint-Petersburg");
+
+        WebElement fileInput = driver.findElement(By.xpath("//input[@type='file']"));
+        String relativeFilePath = "src/uploadFiles/java.png";
+        File fileToUpload = new File(relativeFilePath);
+        String absoluteFilePath = fileToUpload.getAbsolutePath();
+        fileInput.sendKeys(absoluteFilePath);
+
+        WebElement submitButton = driver.findElement(By.xpath("//button[text()='Submit']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitButton);
+
+        WebElement formSubmitted = driver.findElement(By.xpath("//h1[text()='Form submitted']"));
+
+        assertTrue(formSubmitted.isDisplayed(), "Verifying if the confirmation page is displayed");
 
     }
 }
