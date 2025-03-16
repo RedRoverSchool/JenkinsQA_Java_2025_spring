@@ -14,11 +14,13 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
 import java.io.File;
 import java.io.IOException;
+import net.datafaker.Faker;
+import net.datafaker.providers.base.Text;
 import java.time.Duration;
-
+import java.util.Locale;
+import static net.datafaker.providers.base.Text.*;
 import static org.testng.Assert.*;
 
 public class GroupCodeCraftTest {
@@ -163,13 +165,21 @@ public class GroupCodeCraftTest {
 
         driver.get("https://demoqa.com");
 
-        driver.findElement
-                        (By.xpath("//div[1][@class='card mt-4 top-card']"))
-                .click();
 
-        driver.findElement
-                        (By.xpath("//div[@class='element-list collapse show']/descendant::li[@id='item-0']"))
-                .click();
+
+        WebElement card = driver.findElement
+                        (By.xpath("//div[1][@class='card mt-4 top-card']"));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", card);
+
+        card.click();
+
+        WebElement element = driver.findElement
+                        (By.xpath("//div[@class='element-list collapse show']/descendant::li[@id='item-0']"));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+
+        element.click();
 
         String fullName = "Poopa Loopa";
         String eMail = "poopa@loopa.com";
@@ -188,7 +198,7 @@ public class GroupCodeCraftTest {
         WebElement submit = wait.until
                 (ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='submit']")));
 
-        Thread.sleep(2000);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", submit);
 
         action.click(submit).perform();
 
@@ -286,6 +296,8 @@ public class GroupCodeCraftTest {
         WebElement defaultRadio = wait.until
                 (ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='my-radio-2']")));
 
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", defaultRadio);
+
         Thread.sleep(100);
         checkedCheckbox.click();
 
@@ -299,7 +311,6 @@ public class GroupCodeCraftTest {
         assertFalse(defaultCheckbox.isSelected());
 
         assertTrue(checkedRadio.isSelected());
-        Thread.sleep(500);
         defaultRadio.click();
         assertFalse(checkedRadio.isSelected());
         assertTrue(defaultRadio.isSelected());
@@ -316,13 +327,20 @@ public class GroupCodeCraftTest {
         js.executeScript("arguments[0].value = '#C47A12';", colorPicker);
         // Я так особо и не разобрался как с Color Picker работать, даже нейронки особо не помогают
 
-        WebElement dateField = driver.findElement(By.xpath("//input[@name='my-date']"));
+        WebElement dateField = wait.until
+                (ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='my-date']")));
+
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", dateField);
+
+        Thread.sleep(500);
+
         dateField.click();
 
-        Thread.sleep(100);
+        Thread.sleep(500);
 
         WebElement previousMonth = wait.until
                 (ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='datepicker-days']/descendant::th[@class='prev']")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", previousMonth);
 
         for (int i = 0; i < 5; i++) {
             previousMonth.click();
@@ -369,7 +387,160 @@ public class GroupCodeCraftTest {
         WebElement submit = driver.findElement(By.tagName("button"));
         submit.click();
         driver.navigate().back();
+    }
 
+    @Test
+    public void testLumaCreateAccount() throws InterruptedException {
+        var faker = new Faker(new Locale("en"));
+        String firstName = faker.name().firstName();
+        String lastName = faker.name().lastName();
+        String email = firstName.toLowerCase() + lastName.toLowerCase() + "@gmail.com";
+        String password = faker.text().text(Text.TextSymbolsBuilder.builder()
+                .len(14)
+                .with(EN_UPPERCASE, 3)
+                .with(EN_LOWERCASE,4)
+                .with(DEFAULT_SPECIAL,2)
+                .with(DIGITS, 3).build());
+
+        driver.get("https://magento.softwaretestingboard.com/");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement acceptCookies = driver.findElement(By.className("css-1n36tvh"));
+        if(acceptCookies.isDisplayed()) {
+            acceptCookies.click();
+        }
+        WebElement createAccount = wait.until
+                (ExpectedConditions.visibilityOfElementLocated(By.xpath("//header/div[1]/div/ul/li[3]/a")));
+        createAccount.click();
+
+        WebElement firstname = wait.until
+                (ExpectedConditions.visibilityOfElementLocated(By.id("firstname")));
+        firstname.sendKeys(firstName);
+        driver.findElement(By.id("lastname")).sendKeys(lastName);
+        driver.findElement(By.id("email_address")).sendKeys(email);
+        driver.findElement(By.id("password")).sendKeys(password);
+        driver.findElement(By.id("password-confirmation")).sendKeys(password);
+        driver.findElement(By.cssSelector(".action.submit.primary")).click();
+
+        WebElement accountCreated = wait.until
+                (ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"maincontent\"]/div[1]/div[2]/div/div/div")));
+        assertEquals(accountCreated.getText(), "Thank you for registering with Main Website Store.");
+    }
+
+    @Test
+    public void demoQAFormTest() throws InterruptedException {
+        //заходим на сайт
+        driver.get("https://demoqa.com");
+
+        //выбираем кнопку по её xPath и нажимаем
+        WebElement elementButton = driver.findElement(By.xpath(("//*[@id=\"app\"]/div/div/div[2]/div/div[1]/div/div[2]")));
+        elementButton.click();
+
+        Thread.sleep(1000); //подождем немного
+
+        WebElement webTables = driver.findElement(By.xpath("//*[@id=\"item-3\"]/span"));
+        webTables.click();
+
+        WebElement addButton = driver.findElement(By.id("addNewRecordButton"));
+        addButton.click();
+
+        //заполняем поля формы по очереди, ищем их по id
+        WebElement inputFirstName = driver.findElement(By.id("firstName"));
+        inputFirstName.sendKeys("Emiel Regis Rohellec");
+
+        WebElement inputLastName = driver.findElement(By.id("lastName"));
+        inputLastName.sendKeys("Terzieff-Godefroy");
+
+        WebElement inputEmail = driver.findElement(By.id("userEmail"));
+        inputEmail.sendKeys("garlic@forever.va");
+
+        WebElement inputAge = driver.findElement(By.id("age"));
+        inputAge.sendKeys("99");
+
+        WebElement inputSalary = driver.findElement(By.id("salary"));
+        inputSalary.sendKeys("50000");
+
+        WebElement inputDepartment = driver.findElement(By.id("department"));
+        inputDepartment.sendKeys("Geralt's company");
+
+        //отправляем данные в форму
+        WebElement submitButton1 = driver.findElement(By.id("submit"));
+        submitButton1.click();
+
+        //получаем текстовые данные из последней строки таблицы
+        WebElement tableName4 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[4]/div/div[1]"));
+        String addedName4 = tableName4.getText();
+
+        WebElement tableLastName4 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[4]/div/div[2]"));
+        String addedLastName4 = tableLastName4.getText();
+
+        WebElement tableEmail4 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[4]/div/div[4]"));
+        String addedEmail4 = tableEmail4.getText();
+
+        WebElement tableAge4 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[4]/div/div[3]"));
+        String addedAge4 = tableAge4.getText();
+
+        WebElement tableSalary4 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[4]/div/div[5]"));
+        String addedSalary4 = tableSalary4.getText();
+
+        WebElement tableDepartment4 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[4]/div/div[6]"));
+        String addedDepartment4 = tableDepartment4.getText();
+
+        //проверяем соответствие сохранённых данных введённым ранее
+        Assert.assertEquals(addedName4, "Emiel Regis Rohellec");
+        Assert.assertEquals(addedLastName4, "Terzieff-Godefroy");
+        Assert.assertEquals(addedEmail4, "garlic@forever.va");
+        Assert.assertEquals(addedAge4, "99");
+        Assert.assertEquals(addedSalary4, "50000");
+        Assert.assertEquals(addedDepartment4, "Geralt's company");
+
+        //изменяем данные имеющейся строки
+        WebElement changeButton = driver.findElement(By.id("edit-record-3"));
+        changeButton.click();
+
+        WebElement editFirstName = driver.findElement(By.id("firstName"));
+        editFirstName.clear();
+        editFirstName.sendKeys("Jane");
+        WebElement submitButton2 = driver.findElement(By.id("submit"));
+        submitButton2.click();
+
+        //проверяем, что данные изменились
+        WebElement tableName3 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[3]/div/div[1]"));
+        String addedName3 = tableName3.getText();
+        Assert.assertEquals(addedName3, "Jane");
+
+        //удаляем созданную ранее строку
+        WebElement deleteButton = driver.findElement(By.id("delete-record-4"));
+        deleteButton.click();
+
+        //проверяем что строка пустая
+        tableName4 = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[2]/div[2]/div[3]/div[1]/div[2]/div[4]/div/div[1]"));
+        addedName4 = tableName4.getText();
+        Assert.assertEquals(addedName4, " ");
+    }
+
+    @Test
+    public void testNoiseless() throws InterruptedException {
+
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://google.com");
+
+        WebElement textSearch = driver.findElement(By.xpath("//*[@id=\"APjFqb\"]"));
+        textSearch.click();
+        Thread.sleep(400);
+        textSearch.sendKeys("maven");
+
+        WebElement submitSearch = driver.findElement(By.xpath("/html/body/div[1]/div[3]/form/div[1]/div[1]/div[2]/div[4]/div[6]/center/input[1]"));
+        submitSearch.click();
+        Thread.sleep(400);
+
+
+        WebElement text = driver.findElement(By.xpath("/html/head/title"));
+        String getText = text.getText();
+        Assert.assertEquals(getText,"Welcome to Apache Maven – Maven");
+
+        driver.quit();
     }
 
     @Test

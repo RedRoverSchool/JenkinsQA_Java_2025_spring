@@ -13,7 +13,7 @@ import static org.testng.AssertJUnit.assertEquals;
 public class GroupAQARookiesTest {
 
     @Test
-    public void testOnliner() throws InterruptedException {
+    public void onlinerTest() throws InterruptedException {
         WebDriver driver = new ChromeDriver();
 
         driver.get("https://www.onliner.by/");

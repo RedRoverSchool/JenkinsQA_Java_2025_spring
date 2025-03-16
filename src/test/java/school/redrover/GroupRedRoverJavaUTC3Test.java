@@ -1,8 +1,6 @@
 package school.redrover;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,7 +12,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 public class GroupRedRoverJavaUTC3Test {
 
@@ -85,30 +83,35 @@ public class GroupRedRoverJavaUTC3Test {
     }
 
     @Test
-    public void RickAstleyTest () throws InterruptedException {
-        //sorry fo this joke, but it's still a test!
+    public void RickAstleyTest() throws InterruptedException {
+
+        String xPathPlayButton = "//button[@aria-keyshortcuts='k']";
+        String xPathReject = "//button[contains(@aria-label, 'Reject the use of cookies')]";
 
         getDriver().get("https://www.youtube.com/watch?v=hPr-Yc92qaY");
 
-        Thread.sleep(3000);
+        WebElement rejectButton = getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath(xPathReject)));
 
-        getDriver().findElement(By.xpath("//button[@aria-label='Pause (k)']")).click();
+        if (rejectButton.isDisplayed()) {
+            rejectButton.click();
+        }
+
+        getDriver().findElement(By.xpath(xPathPlayButton)).click();
 
         int count = 0;
-        //   Pause keyboard shortcut k
-        WebElement button = getDriver().findElement(By.xpath("/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player/div/div/div[30]/div[2]/div[1]/button"));
-        //WebElement button = getDriver().findElement(By.xpath("//button[@aria-label='Pause keyboard shortcut k']")); // NOT WORKING
+
+        WebElement button = getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath(xPathPlayButton)));
 
         for (int i = 0; i < 10; i++) {
-            Thread.sleep(8000);
             button.click();
             count++;
         }
-        Assert.assertEquals(count,10);
-    }
-    @Test
 
-    public void testCheckBox () throws InterruptedException {
+        Assert.assertEquals(count, 10);
+    }
+
+    @Test
+    public void testCheckBox() throws InterruptedException {
 
         getDriver().get("https://www.selenium.dev/selenium/web/web-form.html");
 
@@ -118,11 +121,65 @@ public class GroupRedRoverJavaUTC3Test {
 
         Thread.sleep(2000);
 
-        String value= getDriver().findElement(By.id("message")).getText();
+        String value = getDriver().findElement(By.id("message")).getText();
 
         Assert.assertEquals(value, "Received!");
 
     }
 
+    @Test
+    public void testAmazon() throws InterruptedException {
+        getDriver().get("https://www.amazon.com/customer-preferences/edit?ie=UTF8&preferencesReturnUrl=%2Fcustomer-preferences%2Fedit%3Fie%3DUTF8%2C%2Fcustomer-preferences%2Fedit%3Fie%3DUTF8%26preferencesReturnUrl%3D%2F-%2Fes%2Fcustomer-preferences%2Fedit%3Fie%3DUTF8%26preferencesReturnUrl%3D%252F-%252Fes%252Fcustomer-preferences%252Fedit%253Fie%253DUTF8%2526preferencesReturnUrl%253D%25252Fs%25253Fk%25253Dball%252526language%25253Des_US%252526crid%25253DXEQUFPHXIKJE%252526sprefix%25253Dball%2525252Caps%2525252C380%252526ref%25253Dnb_sb_noss_1%2526ref_%253Dtopnav_lang_ais%26ref_%3Dtopnav_lang_ais%26ref_%3Dtopnav_lang_ais%26language%3Den_US%26currency%3DUSD&ref_=topnav_lang_ais");
+
+        getDriver().findElement(By.xpath("//*[contains(@class, 'glow-toaster-button-dismiss')]")).click();
+
+        Thread.sleep(2000);
+
+        getDriver().findElement(By.xpath("(//i[@class='a-icon a-icon-radio'])[2]")).click();
+
+        getDriver().findElement(By.id("icp-save-button")).click();
+
+        Thread.sleep(2000);
+
+        WebElement languageES = getDriver().findElement(By.cssSelector(".nav-line-2 div"));
+        Assert.assertEquals(languageES.getText(), "ES");
+    }
+
+    @Test
+    public void itemAddRemoveToCartTest() throws InterruptedException {
+        getDriver().get("https://www.saucedemo.com/");
+
+        WebElement inputUsername = driver.findElement(By.id("user-name"));
+        WebElement inputPassword = driver.findElement(By.id("password"));
+
+        inputUsername.sendKeys("standard_user");
+        inputPassword.sendKeys("secret_sauce");
+
+        WebElement loginButton = driver.findElement(By.cssSelector("#login-button"));
+        loginButton.click();
+
+        getDriver().findElement(By.cssSelector("#item_0_title_link > div")).click();
+        getDriver().findElement(By.xpath("//*[@id=\"add-to-cart\"]")).click();
+
+        WebElement badgeCart = driver.findElement(By.xpath("//*[@id=\"shopping_cart_container\"]/a/span"));
+        assertEquals(badgeCart.getText(), "1");
+
+        Thread.sleep(2000);
+
+        getDriver().findElement(By.xpath("//*[@id=\"shopping_cart_container\"]/a")).click();
+        getDriver().findElement(By.xpath("//*[@id=\"remove-sauce-labs-bike-light\"]")).click();
+
+        Thread.sleep(2000);
+
+        assertFalse(isDisplayed(badgeCart));
+    }
+
+    boolean isDisplayed(WebElement badgeElement) {
+        try {
+            return badgeElement.isDisplayed();
+        } catch (StaleElementReferenceException e) {
+            return false;
+        }
+    }
 
 }
