@@ -58,5 +58,6 @@ public class StarshipTroopersTest {
     @Test
     public void testBadTest () {
         Assert.assertEquals(22,2);
+        bhkjhsfkjhfke
     }
 }
