@@ -230,4 +230,22 @@ public class GroupRedRoverJavaUTC3Test {
 
     }
 
+    @Test
+    public void testTPlus() throws InterruptedException {
+
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://www.tplusgroup.ru/");
+
+        WebElement itPlus = driver.findElement(By.xpath("//*[@id=\"website-menu\"]/ul/li[1]/a"));
+        itPlus.click();
+
+        WebElement company = driver.findElement(By.xpath("//*[@id=\"content-header\"]/h1"));
+        String value = company.getText();
+        Assert.assertEquals(value, "О компании");
+
+        driver.quit();
+
+    }
+
 }
