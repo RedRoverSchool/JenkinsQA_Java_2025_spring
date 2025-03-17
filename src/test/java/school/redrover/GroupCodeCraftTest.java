@@ -557,25 +557,54 @@ public class GroupCodeCraftTest {
     }
 
     @Test
-    public void testNoiseless() throws InterruptedException {
+    public void testDemoQa() throws InterruptedException {
 
         WebDriver driver = new ChromeDriver();
 
-        driver.get("https://google.com");
+        driver.get("https://demoqa.com/");
 
-        WebElement textSearch = driver.findElement(By.xpath("//*[@id=\"APjFqb\"]"));
-        textSearch.click();
-        Thread.sleep(400);
-        textSearch.sendKeys("maven");
-
-        WebElement submitSearch = driver.findElement(By.xpath("/html/body/div[1]/div[3]/form/div[1]/div[1]/div[2]/div[4]/div[6]/center/input[1]"));
-        submitSearch.click();
+        WebElement buttForms = driver.findElement(By.xpath("/html/body/div[2]/div/div/div[2]/div/div[2]/div/div[1]"));
+        buttForms.click();
         Thread.sleep(400);
 
+        WebElement buttElements = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div/div[1]/div/div/div[1]/span/div/div[1]"));
+        buttElements.click();
+        Thread.sleep(200);
 
-        WebElement text = driver.findElement(By.xpath("/html/head/title"));
-        String getText = text.getText();
-        Assert.assertEquals(getText, "Welcome to Apache Maven – Maven");
+        WebElement textBox = driver.findElement(By.xpath("//*[@id=\"item-0\"]/span"));
+        textBox.click();
+
+        WebElement fullNameBox = driver.findElement(By.xpath("//*[@id=\"userName\"]"));
+        fullNameBox.click();
+        fullNameBox.sendKeys("Ivan Ivanov");
+
+         WebElement emailBox = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[2]/div[2]/input"));
+         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", emailBox);
+         emailBox.click();
+         emailBox.sendKeys("ivanovich@yahoo.com");
+
+         WebElement adresBox = driver.findElement(By.xpath("//*[@id=\"currentAddress\"]"));
+         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", adresBox);
+         adresBox.click();
+         adresBox.sendKeys("Улица пушкина, Город Колотушкино");
+
+         WebElement perAdresBox = driver.findElement(By.xpath("//*[@id=\"permanentAddress\"]"));
+         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", perAdresBox);
+         perAdresBox.click();
+         perAdresBox.sendKeys("Темная");
+
+        WebElement submitBox = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[5]/div/button"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", submitBox);
+        submitBox.click();
+        Thread.sleep(300);
+
+        WebElement answerName = driver.findElement(By.xpath("//div/p[text()=\"Ivan Ivanov\"]"));
+        String getName = answerName.getText();
+        Assert.assertEquals(getName,"Name:Ivan Ivanov");
+
+        WebElement answerEmail = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[6]/div/p[2]"));
+        String getEmail = answerEmail.getText();
+        Assert.assertEquals(getEmail, "Email:ivanovich@yahoo.com");
 
         driver.quit();
     }
