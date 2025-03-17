@@ -24,7 +24,7 @@ public class MyFirstTest {
 
             WebElement heading = driver.findElement(By.linkText("Tourist Pass"));
             String value = heading.getText();
-            Assert.assertEquals("Tourist Pass", value);
+            Assert.assertEquals(value,"Tourist Pass");
 
             driver.quit();
         }
