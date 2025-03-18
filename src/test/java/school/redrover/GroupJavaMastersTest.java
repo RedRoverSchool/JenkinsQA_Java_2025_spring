@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -151,7 +152,8 @@ public class GroupJavaMastersTest {
     }
 
     @Test
-    public void testInvalidUserLogin() {
+    public void testInvalidUserLogin() throws InterruptedException {
+
         WebDriver driver = new ChromeDriver();
         driver.get("https://practicetestautomation.com/practice-test-login/");
 
@@ -160,6 +162,8 @@ public class GroupJavaMastersTest {
 
         WebElement submitBtn = driver.findElement(By.id("submit"));
         submitBtn.click();
+
+        Thread.sleep(3000);
 
         WebElement invalidUsernameMessage = driver.findElement(By.id("error"));
         Assert.assertEquals(invalidUsernameMessage.getText(), "Your username is invalid!");
@@ -193,6 +197,34 @@ public class GroupJavaMastersTest {
         // Working properly only after second designation locator
         WebElement addToCartBtn1 = driver.findElement(By.id("add-to-cart-sauce-labs-backpack"));
         Assert.assertEquals(addToCartBtn1.getText(), "Add to cart");
+
+        driver.quit();
+    }
+
+    @Test
+    public void testSortByPriceLow() throws InterruptedException {
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://www.saucedemo.com/");
+
+        WebElement userNameTextField = driver.findElement(By.id("user-name"));
+        userNameTextField.sendKeys("standard_user");
+
+        WebElement passwordTextField = driver.findElement(By.id("password"));
+        passwordTextField.sendKeys("secret_sauce");
+
+        WebElement loginButton = driver.findElement(By.id("login-button"));
+        loginButton.click();
+
+        WebElement sortDropdown = driver.findElement(By.className("product_sort_container"));
+        Select select = new Select(sortDropdown);
+        select.selectByValue("lohi"); // low to high
+
+        Thread.sleep(5000);
+
+        WebElement inventoryList = driver.findElement(By.className("inventory_list"));
+        WebElement firstProduct = driver.findElement(By.xpath("//div[@class='inventory_list']/div[1]//div[@class='inventory_item_name']"));
+        Assert.assertEquals(firstProduct.getText(), "Sauce Labs Onesie");
 
         driver.quit();
     }
