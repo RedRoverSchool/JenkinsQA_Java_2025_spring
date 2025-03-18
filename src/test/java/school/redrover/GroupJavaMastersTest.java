@@ -83,4 +83,23 @@ public class GroupJavaMastersTest {
 
         driver.quit();
     }
+
+    @Test
+    public void testNavigationBtn() {
+        WebDriver driver = new ChromeDriver();
+        driver.manage().window().maximize();
+
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
+
+        WebElement navigationBtn = driver.findElement(By.cssSelector(".btn[href=\"navigation1.html\"]"));
+        navigationBtn.click();
+
+        WebElement pageTitle = driver.findElement(By.cssSelector(".display-6"));
+        String value = pageTitle.getText();
+
+        Assert.assertEquals(value, "Navigation example");
+
+        driver.quit();
+    }
+
 }
