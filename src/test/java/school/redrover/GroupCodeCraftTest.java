@@ -750,6 +750,7 @@ public class GroupCodeCraftTest {
 
         Assert.assertEquals(value, "six");
     }
+
     @Test
     public void testDQARadioButton() throws InterruptedException {
 
@@ -773,8 +774,30 @@ public class GroupCodeCraftTest {
 
         Thread.sleep(500);
         WebElement message = driver.findElement(By.xpath("//div[2]/div[2]/p/span"));
-        String value = message.getText();
+        String value = message.getText( );
         Assert.assertEquals(value, "Impressive");
+
+        driver.quit();
+    }
+
+    @Test
+    public void testBGDropDown() throws InterruptedException {
+
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/index.html");
+
+        WebElement dropDown =
+                driver.findElement(By.xpath("//div[1]/div/div/a[3]"));
+        dropDown.click();
+
+        Thread.sleep(500);
+        WebElement sButton = driver.findElement(By.id("my-dropdown-1"));
+        sButton.click();
+
+        Thread.sleep(500);
+        WebElement text = driver.findElement(By.xpath("//div[1]/div/ul/li[3]/a"));
+        String value = text.getText();
+        Assert.assertEquals(value, "Something else here");
 
         driver.quit();
     }
