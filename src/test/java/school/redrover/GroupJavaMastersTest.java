@@ -83,4 +83,30 @@ public class GroupJavaMastersTest {
 
         driver.quit();
     }
+
+    @Test
+    public void testUpdateCountsOnCartIcon() {
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://www.saucedemo.com/");
+
+        WebElement userNameTextField = driver.findElement(By.id("user-name"));
+        userNameTextField.sendKeys("standard_user");
+
+        WebElement passwordTextField = driver.findElement(By.id("password"));
+        passwordTextField.sendKeys("secret_sauce");
+
+        WebElement loginButton = driver.findElement(By.id("login-button"));
+        loginButton.click();
+
+        WebElement addToCartBtn = driver.findElement(By.id("add-to-cart-sauce-labs-backpack"));
+        addToCartBtn.click();
+
+        WebElement cartIcon = driver.findElement(By.className("shopping_cart_badge"));
+
+        Assert.assertEquals(cartIcon.getText(), "1");
+
+        driver.quit();
+
+    }
 }
