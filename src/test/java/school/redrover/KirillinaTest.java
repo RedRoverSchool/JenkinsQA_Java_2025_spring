@@ -9,15 +9,13 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 
-public class BonigarciaTest {
+public class KirillinaTest {
 
     @Test
     void testChaptersSize(){
-
-        final String BASE_URL = "https://bonigarcia.dev/selenium-webdriver-java/";
         WebDriver driver = new ChromeDriver();
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
 
-        driver.get(BASE_URL);
         List<WebElement> chapters = driver.findElements(By.cssSelector("h5.card-title"));
 
         assertEquals(chapters.size(), 6);
