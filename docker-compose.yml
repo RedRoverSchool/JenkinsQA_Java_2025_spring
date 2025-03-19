@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  selenium-hub:
+    image: selenium/hub:latest
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub  
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  chrome:
+    image: selenium/node-chrome:latest
+    depends_on:
+      - selenium-hub
+    shm_size: "2gb"
+    ports:
+      - "7900:7900" # VNC port
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_VNC_NO_PASSWORD=1
+      - SE_SCREEN_WIDTH=1920
+      - SE_SCREEN_HEIGHT=1080
+      - SE_SCREEN_DEPTH=24
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - selenium-hub
+      - chrome
+    environment:
+      - HUB_HOST=selenium-hub
+    volumes:
+      - ./src:/app/src
+    working_dir: /app
+    command: mvn test
