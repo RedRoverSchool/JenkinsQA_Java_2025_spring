@@ -6,8 +6,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static java.lang.Thread.sleep;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -27,7 +29,7 @@ public class MainTest {
         textBox.sendKeys("Selenium");
         submitButton.click();
 
-        Thread.sleep(1000);
+        sleep(1000);
 
         WebElement message = driver.findElement(By.id("message"));
         String value = message.getText();
@@ -42,7 +44,7 @@ public class MainTest {
         driver.get("https://www.saucedemo.com");
 
         String title = driver.getTitle();
-        assertEquals(title, "Swag Labs");
+        Assert.assertEquals(title, "Swag Labs");
 
         WebElement username = driver.findElement(By.id("user-name"));
         username.sendKeys("locked_out_user");
@@ -53,12 +55,12 @@ public class MainTest {
         WebElement loginButton = driver.findElement(By.id("login-button"));
         loginButton.click();
 
-        Thread.sleep(1000);
+        sleep(1000);
 
         WebElement errorMessage = driver.findElement(By.xpath("//h3"));
-        assertTrue(errorMessage.isDisplayed());
+        Assert.assertTrue(errorMessage.isDisplayed());
 
-        Thread.sleep(1000);
+        sleep(1000);
         driver.quit();
     }
 
