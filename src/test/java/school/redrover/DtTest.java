@@ -13,10 +13,13 @@ public class DtTest {
         WebDriver driver = new ChromeDriver();
         driver.get ("khl.ru");
 
-        WebElement searchButton = driver.findElement()
+        WebElement searchButton = driver.findElement();
         searchButton.click();
 
-        WebElement searchButton = driver.findElement()
+        WebElement searchButton = driver.findElement();
+        searchButton.click();
+
+        WebElement searchButton = driver.findElement();
         searchButton.click();
 
         Assert.assertEquals();
