@@ -7,12 +7,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 
-public class FileUploadTest {
+public class ZarinaFileUploadTest {
 
     WebDriver driver = new ChromeDriver();
 
     @Test
-    public void downloadImageTest(){
+    public void uploadImageTest(){
 
         driver.get("https://the-internet.herokuapp.com/");
         WebElement title = driver.findElement(By.xpath("//h1[@class='heading']"));

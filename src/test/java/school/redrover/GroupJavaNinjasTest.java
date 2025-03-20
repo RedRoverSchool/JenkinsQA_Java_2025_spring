@@ -25,7 +25,7 @@ public class GroupJavaNinjasTest {
     }
 
     @Test
-    public void test() throws InterruptedException {
+    public void testFieldInput() throws InterruptedException {
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
         WebElement webForm = driver.findElement(By.xpath("//a[text() = 'Web form']"));
         webForm.click();
@@ -47,33 +47,59 @@ public class GroupJavaNinjasTest {
         WebElement readonlyInput = driver.findElement(By.name("my-readonly"));
         String readonlyText = readonlyInput.getDomAttribute("readonly");
         assertEquals(readonlyText, "true");
-        //перетаскиваем слайдер в начальную позицию
-        WebElement rangeInput = driver.findElement(By.xpath("//input[@type='range']"));
-        int initialX = rangeInput.getLocation().getX();
-        Actions actions = new Actions(driver);
-        actions.clickAndHold(rangeInput)
-                .moveByOffset(-initialX, 0)
-                .release()
-                .perform();
-        //выбор цвета
-        WebElement colorInput = driver.findElement(By.name("my-colors"));
-        String colorText = colorInput.getDomAttribute("value");
-        colorInput.click();
+    }
 
+        @Test
+        public void testSlider() {
+            driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
+            WebElement webForm = driver.findElement(By.xpath("//a[text() = 'Web form']"));
+            webForm.click();
+
+            WebElement rangeInput = driver.findElement(By.xpath("//input[@type='range']"));
+            String initialValue = rangeInput.getAttribute("value");
+
+            // Получаем минимальное и максимальное значение слайдера
+            int minValue = Integer.parseInt(rangeInput.getAttribute("min"));
+            int maxValue = Integer.parseInt(rangeInput.getAttribute("max"));
+
+            // Вычисляем смещение для начальной позиции
+            int sliderWidth = rangeInput.getSize().getWidth();
+            int targetValue = minValue; // Начальная позиция
+            int offset = (int) ((double) (targetValue - minValue) / (maxValue - minValue) * sliderWidth);
+
+            // Перетаскиваем слайдер в начальную позицию
+            Actions actions = new Actions(driver);
+            actions.clickAndHold(rangeInput)
+                    .moveByOffset(-offset, 0)
+                    .release()
+                    .perform();
+
+            // Получаем значение слайдера после перетаскивания
+            String finalValue = rangeInput.getAttribute("value");
+
+            // Проверяем, что слайдер вернулся в начальную позицию
+            assertEquals(finalValue, "5", "Слайдер не вернулся в начальную позицию");
+        }
+
+        @Test
+                public void dataPucker () throws InterruptedException {
+            driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
+            WebElement webForm = driver.findElement(By.xpath("//a[text() = 'Web form']"));
+            webForm.click();
         //Date picker
-        WebElement dataInput = driver.findElement(By.name("my-date"));
-        dataInput.click();
+        WebElement dataPicker = driver.findElement(By.name("my-date"));
+        dataPicker.click();
         Thread.sleep(1000);
         WebElement selectDate = driver.findElement(By.xpath("//td[text() = '15']"));
         selectDate.click();
-        String data = dataInput.getDomProperty("value");
+        String data = dataPicker.getDomProperty("value");
         String selectDateText = "03/15/2025";
         assertEquals(data, selectDateText);
         driver.quit();
     }
     //Alert
     @Test
-    public void test2() {
+    public void testAlert() {
         WebDriver driver = new ChromeDriver();
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
         driver.manage().window().maximize();
@@ -95,12 +121,9 @@ public class GroupJavaNinjasTest {
     }
     //Launch confirm
     @Test
-    public void test3(){
-
+    public void testLaunchConfirm(){
         WebDriver driver = new ChromeDriver();
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/");
-        driver.manage().window().maximize();
-        driver.manage().deleteAllCookies();
         WebElement dialogBoxes = driver.findElement(By.xpath("//a[text() = 'Dialog boxes']"));
         dialogBoxes.click();
         WebElement dialogTitle = driver.findElement(By.className("display-6"));
@@ -111,9 +134,6 @@ public class GroupJavaNinjasTest {
         // Ожидаем появления алерта
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
-        String alertText = alert.getText();
-        // Получаем текст из алерта (опционально)
-        System.out.println("Текст алерта: " + alertText);
         // Выбор действия: нажать "OK" или "Отмена"
         String action = "OK"; // Можете изменить на "Отмена" для другого действия
         if (action.equals("OK")) {
@@ -128,13 +148,10 @@ public class GroupJavaNinjasTest {
         driver.quit();
     }
 
-
     @Test
-    public void testSearchLamoda() throws InterruptedException {
+    public void testSearchByTextLamoda() throws InterruptedException {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.manage().deleteAllCookies();
         driver.get("https://www.lamoda.ru/");
         String titleWebBrowser = driver.getTitle();
         assertEquals(titleWebBrowser, "Интернет магазин одежды и обуви. Купить обувь, купить одежду, аксессуары в онлайн магазине Lamoda.ru");
@@ -142,24 +159,10 @@ public class GroupJavaNinjasTest {
         search.click();
         search.sendKeys("куртка");
         search.sendKeys(Keys.ENTER);
-        Thread.sleep(10000);
+        Thread.sleep(1000);
         WebElement result = driver.findElement(By.className("_titleText_1s7by_15"));
         String resultText = result.getText();
         assertEquals(resultText, "Товары по запросу «куртка»");
-        driver.quit();
-    }
-
-    @Test
-    public void testShoesLamoda() throws InterruptedException {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        driver.manage().deleteAllCookies();
-        driver.get("https://www.lamoda.ru/");
-        Thread.sleep(1000);
-        WebElement shoes = driver.findElement(By.xpath("//a[@href='/c/15/shoes-women/?sitelink=topmenuW&l=4']"));
-        shoes.click();
-        Thread.sleep(3000);
         driver.quit();
     }
 

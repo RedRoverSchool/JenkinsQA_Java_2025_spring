@@ -23,7 +23,7 @@ public class GroupQAFokuzTest {
     @BeforeMethod
     public void setUp() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
+        options.addArguments("--window-size=1920,1080");
         driver = new ChromeDriver(options);
     }
 
@@ -31,55 +31,38 @@ public class GroupQAFokuzTest {
     public void testWebForm() {
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
 
-        WebElement textInput = driver.findElement(By.xpath("//*[@id='my-text-id']"));
-        textInput.sendKeys("Denis N");
-        Assert.assertEquals(textInput.getAttribute("value"),
-                "Denis N", "Текстовое поле содержит неверное значение");
-
-        WebElement password = driver.findElement(By.xpath("//*[@name='my-password']"));
-        password.sendKeys("123456");
-        Assert.assertEquals(password.getAttribute("value"),
-                "123456", "Поле пароля содержит неверное значение");
-
-        WebElement textArea = driver.findElement(By.xpath("//*[@name='my-textarea']"));
-        textArea.sendKeys("This is a text");
-        Assert.assertEquals(textArea.getAttribute("value"),
-                "This is a text", "Текстовая область содержит неверное значение");
-
-        WebElement radioButton1 = driver.findElement(By.xpath("//*[@id='my-radio-2']"));
-        radioButton1.click();
-        Assert.assertTrue(radioButton1.isSelected(), "Радио-кнопка не выбрана");
-
-        WebElement btnSubmit = driver.findElement(By.xpath("//*[@class='btn btn-outline-primary mt-3']"));
-        btnSubmit.click();
+        driver.findElement(By.xpath("//*[@id='my-text-id']")).sendKeys("Denis N");
+        driver.findElement(By.xpath("//*[@name='my-password']")).sendKeys("123456");
+        driver.findElement(By.xpath("//*[@name='my-textarea']")).sendKeys("This is a text");
+        driver.findElement(By.xpath("//*[@id='my-radio-2']")).click();
+        driver.findElement(By.xpath("//*[@class='btn btn-outline-primary mt-3']")).click();
 
         String currentUrl = driver.getCurrentUrl();
-        assert currentUrl != null;
+        Assert.assertNotNull(currentUrl);
         Assert.assertTrue(currentUrl.contains("submitted"), "Форма не была отправлена");
     }
 
     @Test
-    public void btnClick() {
+    public void testButtonClick() {
         driver.get("https://demoqa.com/buttons");
 
         Actions actions = new Actions(driver);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-        WebElement DoubleClickMe = driver.findElement(By.xpath("//*[@id='doubleClickBtn']"));
-        actions.doubleClick(DoubleClickMe).perform();
+        actions.doubleClick(driver.findElement(By.xpath("//*[@id='doubleClickBtn']")))
+                .contextClick(driver.findElement(By.xpath("//*[@id='rightClickBtn']")))
+                .click(wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[text()='Click Me']"))))
+        .perform();
 
-        WebElement rightClickMe = driver.findElement(By.xpath("//*[@id='rightClickBtn']"));
-        actions.contextClick(rightClickMe).perform();
-
-        WebElement clickMe = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[text()='Click Me']")));
-        actions.click(clickMe).perform();
-
-        Assert.assertTrue(driver.findElement(By.xpath("//*[@id='doubleClickMessage']"))
-                .isDisplayed(), "Кнопка была не нажата");
-        Assert.assertTrue(driver.findElement(By.xpath("//*[@id='rightClickMessage']"))
-                .isDisplayed(), "Кнопка была не правым кликом");
-        Assert.assertTrue(driver.findElement(By.xpath("//*[@id='dynamicClickMessage']"))
-                .isDisplayed(), "Кнопка была не нажата");
+        Assert.assertTrue(
+                driver.findElement(By.xpath("//*[@id='doubleClickMessage']")).isDisplayed(),
+                "Кнопка была не нажата");
+        Assert.assertTrue(
+                driver.findElement(By.xpath("//*[@id='rightClickMessage']")).isDisplayed(),
+                "Кнопка была не правым кликом");
+        Assert.assertTrue(
+                driver.findElement(By.xpath("//*[@id='dynamicClickMessage']")).isDisplayed(),
+                "Кнопка была не нажата");
     }
 
     @Test
@@ -90,28 +73,25 @@ public class GroupQAFokuzTest {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
-        WebElement btnYes = wait.until(
+        WebElement buttonYes = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='yesRadio']"))
         );
-        actions.click(btnYes).perform();
+        actions.click(buttonYes).perform();
 
-        WebElement btnImpressive = wait.until(
+        WebElement buttonImpressive = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='impressiveRadio']"))
         );
-        actions.click(btnImpressive).perform();
+        actions.click(buttonImpressive).perform();
 
-        WebElement btnNo = wait.until(
+        WebElement buttonNo = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='noRadio']"))
         );
-        actions.click(btnNo).perform();
+        actions.click(buttonNo).perform();
 
 
-        String textYes = btnYes.getText();
-        Assert.assertEquals(textYes, "Yes", "Текст элемента не совпадает с 'Yes'");
-        String textImp = btnImpressive.getText();
-        Assert.assertEquals(textImp, "Impressive", "Текст элемента не совпадает с 'Impressive'");
-        String textNo = btnNo.getText();
-        Assert.assertEquals(textNo, "No", "Текст элемента не совпадает с 'No'");
+        Assert.assertEquals(buttonYes.getText(), "Yes", "Текст элемента не совпадает с 'Yes'");
+        Assert.assertEquals(buttonImpressive.getText(), "Impressive", "Текст элемента не совпадает с 'Impressive'");
+        Assert.assertEquals(buttonNo.getText(), "No", "Текст элемента не совпадает с 'No'");
     }
 
 

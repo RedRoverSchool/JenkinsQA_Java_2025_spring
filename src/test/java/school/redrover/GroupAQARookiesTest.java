@@ -93,39 +93,79 @@ public class GroupAQARookiesTest {
     }
 
     @Test
-    public void bookOldFarmhouseTest() throws InterruptedException {
+    public void testBookOldFarmhouse() throws InterruptedException {
         WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
         driver.get("https://automationintesting.online/");
-
         Thread.sleep(500);
 
+        driver.findElement(By.xpath("//input[@id='name']")).sendKeys("Vasiliy");
+        driver.findElement(By.xpath("//input[@id='email']")).sendKeys("qwerty@mailto.ru");
+        driver.findElement(By.xpath("//input[@id='phone']")).sendKeys("+345456789234");
+        driver.findElement(By.cssSelector("input#subject")).sendKeys("The Old Farmhouse, Shady Street, Newfordburyshire, NE1 410S");
+        driver.findElement(By.cssSelector("textarea.form-control")).sendKeys("Hello! I and my family, we want to book your house.");
+        driver.findElement(By.xpath("//button[@id='submitContact']")).click();
+        Thread.sleep(500);
+
+        String heading = driver.findElement(By.xpath("//h2[contains(text(),'Thanks for getting in touch')]")).getText();
+        driver.quit();
+
+        assertEquals(heading, "Thanks for getting in touch Vasiliy!");
+    }
+
+    @Test
+    public void testSelenium() throws InterruptedException {
+
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://www.selenium.dev/selenium/web/web-form.html");
+
         String title = driver.getTitle();
-        Assert.assertEquals(title, "Restful-booker-platform demo");
+        Assert.assertEquals(title, "Web form");
 
-        WebElement inputName = driver.findElement(By.xpath("//input[@id='name']"));
-        inputName.sendKeys("Vasiliy");
-
-        WebElement inputEmail = driver.findElement(By.xpath("//input[@id='email']"));
-        inputEmail.sendKeys("qwerty@mailto.ru");
-
-        WebElement inputPhone = driver.findElement(By.xpath("//input[@id='phone']"));
-        inputPhone.sendKeys("+345456789234");
-
-        WebElement inputSubject = driver.findElement(By.cssSelector("input#subject"));
-        inputSubject.sendKeys("The Old Farmhouse, Shady Street, Newfordburyshire, NE1 410S");
-
-        WebElement textArea = driver.findElement(By.cssSelector("textarea.form-control"));
-        textArea.sendKeys("Hello! I and my family, we want to book your house.\n" +
-                "From: 28.03.2025 To: 10.04.2025\n" + "Best regards Vasiliy Family.");
-
-        WebElement button = driver.findElement(By.xpath("//button[@id='submitContact']"));
-        button.click();
+        WebElement textBox = driver.findElement(By.xpath("//*[@name = 'my-textarea']"));
+        WebElement submitButton = driver.findElement(By.cssSelector("button"));
 
         Thread.sleep(1000);
 
-        WebElement heading = driver.findElement(By.xpath("//h2[contains(text(),'Thanks for getting in touch')]"));
-        Assert.assertEquals(heading.getText(), "Thanks for getting in touch Vasiliy!");
+        textBox.sendKeys("Привет, я автотест");
+        submitButton.click();
+
+        Thread.sleep(1500);
+
+        WebElement message = driver.findElement(By.id("message"));
+        String value = message.getText();
+        Assert.assertEquals(value, "Received!");
+
+        driver.quit();
+    }
+
+    @Test
+    public void testErartaSearch() throws InterruptedException {
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://www.erarta.com");
+
+        Thread.sleep(4000);
+
+        WebElement header1 = driver.findElement(By.xpath("//h1[text()='проведите незабываемый день']"));
+
+        WebElement search = driver.findElement(By.cssSelector("svg.header__search-svg"));
+        search.click();
+
+        WebElement searchInput = driver.findElement(By.cssSelector("input.search-popup__input"));
+        searchInput.sendKeys("весна");
+
+        Thread.sleep(1000);
+
+        WebElement searchButton = driver.findElement(By.cssSelector("button.search-popup__submit"));
+        searchButton.click();
+
+        Thread.sleep(1000);
+
+        WebElement searchResult = driver.findElement(By.cssSelector("a.search-page__result-title"));
+        String resultText = searchResult.getText();
+
+        Assert.assertTrue(resultText.contains("весн") || resultText.contains("весен"));
 
         driver.quit();
     }

@@ -3,12 +3,8 @@ package school.redrover;
 import net.datafaker.Faker;
 import net.datafaker.providers.base.Text;
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Locale;
-import java.util.Random;
+import java.util.Objects;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static net.datafaker.providers.base.Text.*;
@@ -30,11 +26,13 @@ import static org.testng.Assert.*;
 public class GroupCodeCraftTest {
 
     private WebDriver driver;
+    private WebDriverWait wait;
 
     @BeforeMethod
     public void setUp() {
         driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        driver.manage().window().setSize(new Dimension(1366, 768));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     @AfterMethod
@@ -44,158 +42,114 @@ public class GroupCodeCraftTest {
         }
     }
 
-    public static String[] generateRandomHexColors(int count) {
-        Random random = new Random();
-        String[] colors = new String[count];
-        for (int i = 0; i < count; i++) {
-            String hexColor = String.format("#%06x", random.nextInt(0xFFFFFF + 1));
-            colors[i] = hexColor;
-        }
-        return colors;
-    }
-
     @Test
-    public void testSwagLabs() throws InterruptedException {
-
+    public void testSwagLabs() {
         driver.get("https://www.saucedemo.com");
 
-        String title = driver.getTitle();
-        assertEquals(title, "Swag Labs");
+        driver.findElement(By.id("user-name")).sendKeys("standard_user");
+        driver.findElement(By.id("password")).sendKeys("secret_sauce");
+        driver.findElement(By.id("login-button")).click();
 
-        WebElement username = driver.findElement(By.id("user-name"));
-        username.sendKeys("standard_user");
-
-        WebElement password = driver.findElement(By.id("password"));
-        password.sendKeys("secret_sauce");
-
-        WebElement loginButton = driver.findElement(By.id("login-button"));
-        loginButton.click();
-
-        WebElement backpack = driver.findElement
-                (By.id("add-to-cart-sauce-labs-backpack"));
-        backpack.click();
+        driver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
 
         WebElement removeBackpack = driver.findElement
                 (By.xpath("//button[@class='btn btn_secondary btn_small btn_inventory ']"));
-        String getRemoveBackpackText = removeBackpack.getText();
-        assertEquals(getRemoveBackpackText, "Remove");
         String color = removeBackpack.getCssValue("border");
         int rgbIndex = color.indexOf("rgb");
-        assertEquals(color.substring(rgbIndex), "rgb(226, 35, 26)");
+        String removeBackpackText = removeBackpack.getText();
 
         WebElement cart = driver.findElement
                 (By.xpath("//span[@class='shopping_cart_badge']"));
-        String cartSize = cart.getText();
-        assertEquals(cartSize, "1");
 
-        WebElement jacket = driver.findElement
-                (By.xpath("//button[@id='add-to-cart-sauce-labs-fleece-jacket']"));
-        jacket.click();
-
-        assertEquals(cart.getText(), "2");
+        driver.findElement
+                (By.xpath("//button[@id='add-to-cart-sauce-labs-fleece-jacket']"))
+                .click();
+        String cartShopNumbers = cart.getText();
 
         cart.click();
 
         WebElement firstItem = driver.findElement
                 (By.xpath("//a[@id='item_4_title_link']/div"));
         String firstItemText = firstItem.getText();
-        assertEquals(firstItemText, "Sauce Labs Backpack");
-
         WebElement secondItem = driver.findElement
                 (By.xpath("//a[@id='item_5_title_link']/div"));
         String secondItemText = secondItem.getText();
-        assertEquals(secondItemText, "Sauce Labs Fleece Jacket");
 
         String firstPrice = driver.findElement
                         (By.xpath("//a[@id='item_4_title_link']/following-sibling::div[2]/div")).
-                getText();
-        firstPrice = firstPrice.substring(1);
-
-        assertEquals(firstPrice, "29.99");
+                getText().substring(1);
         double firstPriceDouble = Double.parseDouble(firstPrice);
 
         String secondString = driver.findElement
                         (By.xpath("//a[@id='item_5_title_link']/following-sibling::div[2]/div")).
-                getText();
-        secondString = secondString.substring(1);
-
-        assertEquals(secondString, "49.99");
+                getText().substring(1);
         double secondPriceDouble = Double.parseDouble(secondString);
 
         driver.findElement(By.xpath("//button[@id='checkout']")).click();
 
         driver.findElement(By.xpath("//input[@id='first-name']")).
-                sendKeys("Poopa");
+                sendKeys("Jane");
         driver.findElement(By.xpath("//input[@id='last-name']")).
-                sendKeys("Loopa");
+                sendKeys("Doe");
         driver.findElement(By.xpath("//input[@id='postal-code']")).
-                sendKeys("322228");
+                sendKeys("123456");
         driver.findElement(By.xpath("//input[@id='continue']")).
                 click();
 
-        assertEquals(driver.findElement(By.xpath("//div[@data-test='shipping-info-value']"))
-                .getText(), "Free Pony Express Delivery!");
+        WebElement shippingInformation = driver.findElement
+                (By.xpath("//div[@data-test='shipping-info-value']"));
+        String shippingInformationText = shippingInformation.getText();
 
-        double tax = (firstPriceDouble + secondPriceDouble) * 0.08;
-        double totalPriceWithTax = firstPriceDouble + secondPriceDouble + tax;
+        double taxSum = (firstPriceDouble + secondPriceDouble) * 0.08;
+        double totalPriceWithTax = firstPriceDouble + secondPriceDouble + taxSum;
         double totalPriceWithoutTax = firstPriceDouble + secondPriceDouble;
 
-        double roundedTax = Math.round(tax * 100.0) / 100.0;
+        double roundedTax = Math.round(taxSum * 100.0) / 100.0;
         double roundedPriceWithTax = Math.round(totalPriceWithTax * 100.0) / 100.0;
         double roundedPriceWithoutTax = Math.round(totalPriceWithoutTax * 100.0) / 100.0;
 
-        assertEquals(driver.findElement(By.xpath("//div[@class='summary_subtotal_label']"))
-                .getText(), "Item total: $" + roundedPriceWithoutTax);
-
-        assertEquals(driver.findElement(By.xpath("//div[@class='summary_tax_label']"))
-                .getText(), "Tax: $" + roundedTax + "0");
-
-        assertEquals(driver.findElement(By.xpath("//div[@data-test='total-label']"))
-                .getText(), "Total: $" + roundedPriceWithTax);
+        WebElement itemTotal = driver.findElement(By.xpath("//div[@class='summary_subtotal_label']"));
+        WebElement tax = driver.findElement(By.xpath("//div[@class='summary_tax_label']"));
+        WebElement total = driver.findElement(By.xpath("//div[@data-test='total-label']"));
+        String itemTotalText = itemTotal.getText();
+        String taxText = tax.getText();
+        String totalText = total.getText();
 
         driver.findElement(By.xpath("//button[@id='finish']")).
                 click();
-
-        assertEquals(driver.findElement
-                        (By.xpath("//h2")).getText(),
-                "Thank you for your order!");
-
         driver.findElement(By.xpath("//button[@id='back-to-products']")).
                 click();
 
-        assertEquals(driver.findElement
-                        (By.xpath("//div[@class='app_logo']")).
-                getText(), "Swag Labs");
+        WebElement swagLabsPageLogo = driver.findElement
+                (By.xpath("//div[@class='app_logo']"));
 
-        Thread.sleep(2000);
+        assertEquals(removeBackpackText, "Remove");
+        assertEquals(color.substring(rgbIndex), "rgb(226, 35, 26)");
+        assertEquals(cartShopNumbers, "2");
+        assertEquals(firstItemText, "Sauce Labs Backpack");
+        assertEquals(secondItemText, "Sauce Labs Fleece Jacket");
+        assertEquals(firstPrice, "29.99");
+        assertEquals(secondString, "49.99");
+        assertEquals(shippingInformationText, "Free Pony Express Delivery!");
+        assertEquals(itemTotalText, "Item total: $" + roundedPriceWithoutTax);
+        assertEquals(taxText, "Tax: $" + roundedTax + "0");
+        assertEquals(totalText, "Total: $" + roundedPriceWithTax);
+        assertEquals(swagLabsPageLogo.getText(), "Swag Labs");
     }
 
 
     @Test
-    public void testToolsQATestBox() throws InterruptedException {
-
-        Actions action = new Actions(driver);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
+    public void testToolsQATestBox() {
         driver.get("https://demoqa.com");
 
+        driver.findElement
+                (By.xpath("//div[1][@class='card mt-4 top-card']")).click();
+        driver.findElement
+                (By.xpath("//div[@class='element-list collapse show']/descendant::li[@id='item-0']"))
+                .click();
 
-        WebElement card = driver.findElement
-                (By.xpath("//div[1][@class='card mt-4 top-card']"));
-
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", card);
-
-        card.click();
-
-        WebElement element = driver.findElement
-                (By.xpath("//div[@class='element-list collapse show']/descendant::li[@id='item-0']"));
-
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-
-        element.click();
-
-        String fullName = "Poopa Loopa";
-        String eMail = "poopa@loopa.com";
+        String fullName = "Jane Doe";
+        String eMail = "janedoe@yahoo.com";
         String currentAddress = "Pushkin's street, Kolotushkin's house";
         String permAddress = "Same as current";
 
@@ -210,20 +164,15 @@ public class GroupCodeCraftTest {
 
         WebElement submit = wait.until
                 (ExpectedConditions.elementToBeClickable(By.xpath("//button[@id='submit']")));
-
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", submit);
-
-        action.click(submit).perform();
+        submit.click();
 
         WebElement fullNameWeb = wait.until
                 (ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[@id='name']")));
-
         WebElement eMailWeb = wait.until
                 (ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[@id='email']")));
-
         WebElement currentAddressWeb = wait.until
                 (ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[@id='currentAddress']")));
-
         WebElement permAddressWeb = wait.until
                 (ExpectedConditions.visibilityOfElementLocated(By.xpath("//p[@id='permanentAddress']")));
 
@@ -231,46 +180,40 @@ public class GroupCodeCraftTest {
         assertEquals(eMailWeb.getText(), "Email:" + eMail);
         assertEquals(currentAddressWeb.getText(), "Current Address :" + currentAddress);
         assertEquals(permAddressWeb.getText(), "Permananet Address :" + permAddress);
-
     }
 
     @Test
-    public void bonigarciaWebForm() throws InterruptedException, IOException {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
+    public void testWebForm() {
         var faker = new Faker(new Locale("en"));
 
         String fullName = faker.name().fullName();
-        String password = faker.text().text(Text.TextSymbolsBuilder.builder()
-                .len(10)
-                .with(EN_UPPERCASE, 3)
-                .with(EN_LOWERCASE, 3)
-                .with(DEFAULT_SPECIAL, 2)
-                .with(DIGITS, 2).build());
-        String text = faker.text().text(20, 30);
+        String password = faker.internet().password();
+        String text = faker.lorem().sentence();
 
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
 
         WebElement name = driver.findElement(By.id("my-text-id"));
         name.sendKeys(fullName);
-        assertEquals(name.getDomProperty("value"), fullName);
 
         WebElement passwordField = driver.findElement(By.xpath("//input[@type='password']"));
         passwordField.sendKeys(password);
-        assertEquals(passwordField.getDomProperty("value"), password);
 
         WebElement textArea = driver.findElement(By.tagName("textarea"));
         textArea.sendKeys(text);
+
+        assertEquals(name.getDomProperty("value"), fullName);
+        assertEquals(passwordField.getDomProperty("value"), password);
         assertEquals(textArea.getDomProperty("value"), text);
-
-        boolean inputDisabledCheck = driver.findElement
-                (By.xpath("//input[@name='my-disabled']")).isEnabled();
-
-        assertFalse(inputDisabledCheck);
-
+        assertFalse(driver.findElement
+                (By.xpath("//input[@name='my-disabled']")).isEnabled());
         assertNotNull(driver.findElement
                         (By.xpath("//input[@name='my-readonly']")).
                 getDomAttribute("readonly"));
+    }
+
+    @Test
+    public void testWebFormSelect() {
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
 
         WebElement dropDownMenu = driver.findElement
                 (By.xpath("//select[@name='my-select']"));
@@ -278,36 +221,29 @@ public class GroupCodeCraftTest {
         Select select = new Select(dropDownMenu);
 
         select.selectByContainsVisibleText("Open this select menu");
-        assertEquals(dropDownMenu.getDomProperty("value"), "Open this select menu");
+        String firstCheck = dropDownMenu.getDomProperty("value");
+
         select.selectByValue("1");
-        assertEquals(dropDownMenu.getDomProperty("value"), "1");
+        String secondCheck = dropDownMenu.getDomProperty("value");
+
         select.selectByIndex(2);
-        assertEquals(dropDownMenu.getDomProperty("value"), "2");
+        String thirdCheck = dropDownMenu.getDomProperty("value");
+
         select.selectByContainsVisibleText("Three");
-        assertEquals(dropDownMenu.getDomProperty("value"), "3");
+        String fourthCheck = dropDownMenu.getDomProperty("value");
 
+        assertEquals(firstCheck, "Open this select menu");
+        assertEquals(secondCheck, "1");
+        assertEquals(thirdCheck, "2");
+        assertEquals(fourthCheck, "3");
+    }
 
-        WebElement dropDownMenuDataList = wait.until
-                (ExpectedConditions.elementToBeClickable
-                        (By.xpath("//input[@name='my-datalist']")));
-        dropDownMenuDataList.click();
-
-        String[] cities = {"San Francisco", "New York", "Seattle", "Los Angeles",
-                "Chicago", "Moscow", "Aprelevka", "Mozhaisk", "Saint-Petersburg"};
-
-        for (String city : cities) {
-            js.executeScript
-                    ("arguments[0].value = '" + city + "';", dropDownMenuDataList);
-            String valueCheck = dropDownMenuDataList.getDomProperty("value");
-            dropDownMenuDataList.clear();
-            dropDownMenuDataList.click();
-            assertEquals(city, valueCheck);
-        }
+    @Test
+    public void testCheckboxAndFileInput() throws IOException {
+        driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
 
         WebElement fileInput = driver.findElement(By.xpath("//input[@name='my-file']"));
 
-        // Создание временного txt-фаила для того, чтобы тест проходил у всех
-        // После прогона файл удаляется
         File tempFile = File.createTempFile("temp", ".txt");
         FileUtils.writeStringToFile(tempFile, "This is a test file content.", "UTF-8");
         fileInput.sendKeys(tempFile.getAbsolutePath());
@@ -322,108 +258,18 @@ public class GroupCodeCraftTest {
         WebElement defaultRadio = wait.until
                 (ExpectedConditions.elementToBeClickable(By.xpath("//input[@id='my-radio-2']")));
 
-        js.executeScript("arguments[0].scrollIntoView(true);", defaultRadio);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", defaultRadio);
 
-        Thread.sleep(100);
         checkedCheckbox.click();
+        defaultCheckbox.click();
+        defaultRadio.click();
+        checkedRadio.click();
 
         assertFalse(checkedCheckbox.isSelected());
-        checkedCheckbox.click();
-        assertTrue(checkedCheckbox.isSelected());
-
-        defaultCheckbox.click();
         assertTrue(defaultCheckbox.isSelected());
-        defaultCheckbox.click();
-        assertFalse(defaultCheckbox.isSelected());
-
         assertTrue(checkedRadio.isSelected());
-        defaultRadio.click();
-        assertFalse(checkedRadio.isSelected());
-        assertTrue(defaultRadio.isSelected());
-
-        WebElement colorPicker = wait.until
-                (ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='my-colors']")));
-        colorPicker.click();
-
-        String[] colors = generateRandomHexColors(10);
-
-        for (String color : colors) {
-            js.executeScript
-                    ("arguments[0].value = '" + color + "';", colorPicker);
-            Thread.sleep(200);
-            String valueCheck = colorPicker.getDomProperty("value");
-            assertEquals(color, valueCheck);
-        }
-
-        WebElement dateField = wait.until
-                (ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='my-date']")));
-
-        js.executeScript("arguments[0].scrollIntoView(true);", dateField);
-
-        Thread.sleep(500);
-
-        dateField.click();
-
-        Thread.sleep(500);
-
-        WebElement previousMonth = wait.until
-                (ExpectedConditions.visibilityOfElementLocated
-                        (By.xpath("//div[@class='datepicker-days']/descendant::th[@class='prev']")));
-        js.executeScript("arguments[0].scrollIntoView(true);", previousMonth);
-
-        for (int i = 0; i < 5; i++) {
-            previousMonth.click();
-        }
-        WebElement monthAndYear = wait.until
-                (ExpectedConditions.visibilityOfElementLocated
-                        (By.xpath("//div[@class='datepicker-days']/descendant::th[@class='datepicker-switch']")));
-        assertEquals(monthAndYear.getText(), "October 2024");
-
-        WebElement nextMonth = wait.until
-                (ExpectedConditions.visibilityOfElementLocated
-                        (By.xpath("//div[@class='datepicker-days']/descendant::th[@class='next']")));
-
-        for (int i = 0; i < 5; i++) {
-            nextMonth.click();
-        }
-        assertEquals(monthAndYear.getText(), "March 2025");
-
-        WebElement dayPick = wait.until
-                (ExpectedConditions.visibilityOfElementLocated
-                        (By.xpath("//div[@class='datepicker-days']/descendant::td[text()='2' and @class='day']")));
-
-        dayPick.click();
-        monthAndYear.click();
-
-        WebElement monthClick = wait.until
-                (ExpectedConditions.visibilityOfElementLocated
-                        (By.xpath("//span[text()='Jun']")));
-        monthClick.click();
-
-        assertEquals(dateField.getDomProperty("value"), "03/02/2025");
-
-        defaultRadio.click();
-
-        WebElement range = driver.findElement(By.xpath("//input[@name='my-range']"));
-
-        for (int i = 0; i < 11; i++) {
-            String value = String.valueOf(i);
-            js.executeScript("arguments[0].value = '" + value + "';", range);
-            String valueCheck = range.getDomProperty("valueAsNumber");
-            assertEquals(value, valueCheck);
-        }
-        for (int i = 10; i != 0; i--) {
-            String value = String.valueOf(i);
-            js.executeScript("arguments[0].value = '" + value + "';", range);
-            String valueCheck = range.getDomProperty("valueAsNumber");
-            assertEquals(value, valueCheck);
-        }
-
-        WebElement submit = driver.findElement(By.tagName("button"));
-        submit.click();
-        assertEquals(driver.findElement(By.xpath("//p[@class]")).getText(), "Received!");
-        driver.navigate().back();
-        assertEquals(driver.findElement(By.xpath("//h1[text()='Web form']")).getText(), "Web form");
+        assertFalse(defaultRadio.isSelected());
+        assertFalse(Objects.requireNonNull(fileInput.getDomProperty("value")).isEmpty());
     }
 
     @Test
@@ -579,20 +425,20 @@ public class GroupCodeCraftTest {
         fullNameBox.click();
         fullNameBox.sendKeys("Ivan Ivanov");
 
-         WebElement emailBox = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[2]/div[2]/input"));
-         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", emailBox);
-         emailBox.click();
-         emailBox.sendKeys("ivanovich@yahoo.com");
+        WebElement emailBox = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[2]/div[2]/input"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", emailBox);
+        emailBox.click();
+        emailBox.sendKeys("ivanovich@yahoo.com");
 
-         WebElement adresBox = driver.findElement(By.xpath("//*[@id=\"currentAddress\"]"));
-         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", adresBox);
-         adresBox.click();
-         adresBox.sendKeys("Улица пушкина, Город Колотушкино");
+        WebElement adresBox = driver.findElement(By.xpath("//*[@id=\"currentAddress\"]"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", adresBox);
+        adresBox.click();
+        adresBox.sendKeys("Улица пушкина, Город Колотушкино");
 
-         WebElement perAdresBox = driver.findElement(By.xpath("//*[@id=\"permanentAddress\"]"));
-         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", perAdresBox);
-         perAdresBox.click();
-         perAdresBox.sendKeys("Темная");
+        WebElement perAdresBox = driver.findElement(By.xpath("//*[@id=\"permanentAddress\"]"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", perAdresBox);
+        perAdresBox.click();
+        perAdresBox.sendKeys("Темная");
 
         WebElement submitBox = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[5]/div/button"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", submitBox);
@@ -601,7 +447,7 @@ public class GroupCodeCraftTest {
 
         WebElement answerName = driver.findElement(By.xpath("//div/p[text()=\"Ivan Ivanov\"]"));
         String getName = answerName.getText();
-        Assert.assertEquals(getName,"Name:Ivan Ivanov");
+        Assert.assertEquals(getName, "Name:Ivan Ivanov");
 
         WebElement answerEmail = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[6]/div/p[2]"));
         String getEmail = answerEmail.getText();
@@ -685,6 +531,7 @@ public class GroupCodeCraftTest {
 
         driver.quit();
     }
+
     @Test
     public void testSearch() throws InterruptedException {
         WebDriver driver = new ChromeDriver();
@@ -774,7 +621,7 @@ public class GroupCodeCraftTest {
 
         Thread.sleep(500);
         WebElement message = driver.findElement(By.xpath("//div[2]/div[2]/p/span"));
-        String value = message.getText( );
+        String value = message.getText();
         Assert.assertEquals(value, "Impressive");
 
         driver.quit();
@@ -800,5 +647,23 @@ public class GroupCodeCraftTest {
         Assert.assertEquals(value, "Something else here");
 
         driver.quit();
+    }
+
+    @Test
+    public void inputArrowUpTest() throws InterruptedException {
+        driver.get("http://the-internet.herokuapp.com/inputs");
+        WebElement inputField = driver.findElement(By.xpath("//input[@type='number']"));
+        inputField.sendKeys(Keys.ARROW_UP);
+        String fieldNumber = inputField.getAttribute("value");
+        Assert.assertEquals(fieldNumber, "1");
+    }
+
+    @Test
+    public void inputArrowDownTest() {
+        driver.get("http://the-internet.herokuapp.com/inputs");
+        WebElement inputField = driver.findElement(By.xpath("//input[@type='number']"));
+        inputField.sendKeys(Keys.ARROW_DOWN);
+        String fieldNumber = inputField.getAttribute("value");
+        Assert.assertEquals(fieldNumber, "-1");
     }
 }

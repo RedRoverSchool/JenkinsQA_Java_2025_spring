@@ -23,7 +23,7 @@ public class EkatTest {
         driver.get("https://www.selenium.dev/selenium/web/web-form.html");
 
         String title = driver.getTitle();
-        assertEquals("Web form", title);
+        assertEquals(title, "Web form");
 
         WebElement textBox = driver.findElement(By.name("my-text"));
         WebElement submitButton = driver.findElement(By.cssSelector("button"));
@@ -33,9 +33,33 @@ public class EkatTest {
 
         WebElement message = driver.findElement(By.id("message"));
         String value = message.getText();
-        assertEquals("Received!", value);
+        assertEquals(value, "Received!");
+
+        driver.quit();
+    }
+
+    @Test
+    public void firstCoffeeTest() {
+        WebDriverManager.chromedriver().setup();
+
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://coffee-cart.app/");
+
+        String title = driver.getTitle();
+        assertEquals(title, "Coffee cart");
+
+        WebElement menuButton = driver.findElement(By.cssSelector("a[aria-label='Menu page']"));
+        assertEquals(menuButton.getText(), "menu");
+
+        WebElement cartButton = driver.findElement(By.cssSelector("a[aria-label='Cart page']"));
+        assertEquals(cartButton.getText(), "cart (0)");
+
+        WebElement gitButton = driver.findElement((By.cssSelector("a[aria-label='GitHub page']")));
+        assertEquals(gitButton.getText(),"github");
 
 
         driver.quit();
+
     }
 }

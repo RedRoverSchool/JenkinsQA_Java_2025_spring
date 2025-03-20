@@ -130,4 +130,32 @@ public class Group_JavaQATest {
 
         driver.quit();
     }
+
+    @Test
+    public void testEliza() throws InterruptedException {
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://parabank.parasoft.com/parabank/index.htm");
+
+        Thread.sleep(2000);
+
+        driver.findElement(By.xpath("//div//ul[@class='leftmenu']//li//a[text()='About Us']")).click();
+
+        WebElement customerLoginHeader = driver.findElement(By.xpath("//h2[text()='Customer Login']"));
+        String text =  customerLoginHeader.getText();
+        assertEquals(text, "Customer Login");
+
+        WebElement title = driver.findElement(By.xpath("//h1[text()='ParaSoft Demo Website']"));
+        String titleText = title.getText();
+        assertEquals(titleText, "ParaSoft Demo Website");
+
+        driver.findElement(By.xpath("//p//a[text()='www.parasoft.com']")).click();
+        WebElement textNewPage =  driver.findElement(By.xpath("//h1[contains(text(),' Testing That Keeps Pac')]"));
+        String textNew = textNewPage.getText();
+        assertEquals(textNew, "Testing That Keeps Pace With Real-World Innovation");
+
+
+        driver.quit();
+    }
+
+
 }
