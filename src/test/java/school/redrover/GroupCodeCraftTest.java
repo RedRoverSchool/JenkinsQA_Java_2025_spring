@@ -447,10 +447,11 @@ public class GroupCodeCraftTest {
 
         WebElement answerName = driver.findElement(By.xpath("//div/p[text()=\"Ivan Ivanov\"]"));
         String getName = answerName.getText();
-        Assert.assertEquals(getName, "Name:Ivan Ivanov");
 
         WebElement answerEmail = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[6]/div/p[2]"));
         String getEmail = answerEmail.getText();
+
+        Assert.assertEquals(getName, "Name:Ivan Ivanov");
         Assert.assertEquals(getEmail, "Email:ivanovich@yahoo.com");
 
         driver.quit();
