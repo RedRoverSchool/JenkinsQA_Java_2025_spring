@@ -4,6 +4,7 @@ import net.datafaker.Faker;
 import net.datafaker.providers.base.Text;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -13,6 +14,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
@@ -600,8 +603,6 @@ public class GroupCodeCraftTest {
 
     @Test
     public void testDQARadioButton() throws InterruptedException {
-
-        WebDriver driver = new ChromeDriver();
         driver.get("https://demoqa.com");
 
         WebElement firstBlock =
@@ -623,14 +624,10 @@ public class GroupCodeCraftTest {
         WebElement message = driver.findElement(By.xpath("//div[2]/div[2]/p/span"));
         String value = message.getText();
         Assert.assertEquals(value, "Impressive");
-
-        driver.quit();
     }
 
     @Test
     public void testBGDropDown() throws InterruptedException {
-
-        WebDriver driver = new ChromeDriver();
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/index.html");
 
         WebElement dropDown =
@@ -645,8 +642,6 @@ public class GroupCodeCraftTest {
         WebElement text = driver.findElement(By.xpath("//div[1]/div/ul/li[3]/a"));
         String value = text.getText();
         Assert.assertEquals(value, "Something else here");
-
-        driver.quit();
     }
 
     @Test
@@ -666,4 +661,51 @@ public class GroupCodeCraftTest {
         String fieldNumber = inputField.getAttribute("value");
         Assert.assertEquals(fieldNumber, "-1");
     }
+
+    @Test
+    public void testFakeStoreShopping() throws InterruptedException, AWTException {
+        driver.get("https://letcode.in/home");
+
+        WebElement tema =
+                driver.findElement(By.xpath("//*[@id=\"toggle-theme\"]"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", tema);
+        tema.click();
+
+        WebElement monitor =
+                driver.findElement(By.xpath("//div[14]/div/div[1]/figure/img"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", monitor);
+        Thread.sleep(500);
+        monitor.click();
+
+        WebElement inCart = wait.until
+                (ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='button is-primary mt-4' and span[text()='Add to Cart']]")));
+        inCart.click();
+        Thread.sleep(500);
+        inCart.click();
+
+        WebElement navBarWorkSpace = driver.findElement(By.xpath("//a[text()='Work-Space']"));
+        navBarWorkSpace.click();
+
+        WebElement wSPoM = driver.findElement(By.xpath("//a[text()=' Page Object Model ']"));
+        wSPoM.click();
+
+        WebElement cart = driver.findElement(By.xpath("//i[contains(@class, 'fas') and contains(@class, 'fa-cart-shopping')]"));
+        cart.click();
+
+        WebElement minus = driver.findElement(By.xpath("//button[text()='-']"));
+        minus.click();
+
+        WebElement checkoutButton = new WebDriverWait(driver, Duration.of(5, SECONDS))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Checkout']")));
+        checkoutButton.click();
+
+        Robot robot = new Robot();
+        robot.keyPress(KeyEvent.VK_ENTER);
+        robot.keyRelease(KeyEvent.VK_ENTER);
+
+        Thread.sleep(5000);
+        WebElement message1 = driver.findElement(By.xpath("//p[@class='title is-4']"));
+        Assert.assertEquals(message1.getText(), "Your cart is empty");
+    }
+
 }
