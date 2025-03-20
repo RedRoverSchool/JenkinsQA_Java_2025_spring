@@ -4,10 +4,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,10 +12,14 @@ import java.util.List;
 
 public class ReportUtils {
 
-    private WebDriver driver;
+    private final WebDriver driver;
 
     public ReportUtils(WebDriver driver) {
         this.driver = driver;
+        File screenshotsDir = new File("screenshots");
+        if (!screenshotsDir.exists()) {
+            screenshotsDir.mkdirs(); // Создаем папку и все необходимые родительские папки
+        }
     }
 
     /**

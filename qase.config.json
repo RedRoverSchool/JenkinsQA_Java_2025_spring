@@ -1,0 +1,31 @@
+{
+  "mode": "testops",
+  "fallback": "report",
+  "debug": true,
+  "environment": "local",
+  "report": {
+    "driver": "local",
+    "connection": {
+      "local": {
+        "path": "./build/qase-report",
+        "format": "json"
+      }
+    }
+  },
+  "testops": {
+    "api": {
+      "token": "b17c74eb379ec8a3f106940ac9dc7c8d519940ffc59e068004d5ce82c5707856",
+      "host": "qase.io"
+    },
+    "run": {
+      "title": "Regression Run",
+      "description": "Description of the regression run",
+      "complete": true
+    },
+    "defect": false,
+    "project": "RRS",
+    "batch": {
+      "size": 100
+    }
+  }
+}
