@@ -405,7 +405,6 @@ public class GroupCodeCraftTest {
 
     @Test
     public void testDemoQa() throws InterruptedException {
-
         WebDriver driver = new ChromeDriver();
 
         driver.get("https://demoqa.com/");
