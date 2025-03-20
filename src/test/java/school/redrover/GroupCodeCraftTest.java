@@ -504,30 +504,22 @@ public class GroupCodeCraftTest {
     }
 
     @Test
-    public void LearningEnglish() throws InterruptedException {
-        WebDriver driver = new ChromeDriver();
+    public void testTitleEnPodcast() throws InterruptedException {
 
-
+        driver = new ChromeDriver();
         driver.get("https://learningenglish.voanews.com/p/5610.html");
+        driver.findElement(By.xpath("//div[@id='page']//label[contains(@class, 'top-srch-trigger')]")).click();
 
+        WebElement textBox = driver.findElement(By.id("txtHeaderSearch"));
+        WebElement searchButton = driver.findElement(By.tagName("button"));
 
-        driver.findElement(By.xpath("//*[@id=\"page\"]/div[1]/div/div/div[1]/label[2]")).click();
-
-
-        WebElement textBox = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div/div[1]/div[2]/div/form/input"));
         textBox.sendKeys("learning english");
-
-        Thread.sleep(1000);
-
-        WebElement searchButton = driver.findElement(By.xpath("//*[@id=\"form-topSearchHeader\"]/button"));
         searchButton.click();
 
-        Thread.sleep(1000);
-
-        WebElement title = driver.findElement(By.xpath("//*[@id=\"search-results\"]/div[2]/div/ul/li[1]/div/div/a/h4"));
+        WebElement title = driver.findElement(By.xpath("//div[@id='search-results']//li[1]//h4"));
         String titleText = title.getText();
 
-        assertEquals(titleText, "Learning English Podcast");
+        Assert.assertEquals(titleText, "Learning English Podcast");
 
         driver.quit();
     }
