@@ -7,11 +7,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
@@ -20,7 +22,6 @@ public class JavaRebelsTest {
     private WebDriver driver;
     private WebDriverWait wait;
     private static final String BASE_URL = "http://tech-avito-intern.jumpingcrab.com/advertisements/";
-    private static final String TITLE = "Avito";
 
     @BeforeMethod
     void setup() {
@@ -37,7 +38,7 @@ public class JavaRebelsTest {
 
     @Test
     public void testTitleName() {
-        assertEquals(driver.getTitle(), TITLE);
+        assertEquals(driver.getTitle(), "Avito");
     }
 
     @Test
@@ -82,5 +83,18 @@ public class JavaRebelsTest {
                 By.xpath("//h4[text()=\"" + itemName + "\"]")));
 
         assertEquals(item.getText(), itemName);
+    }
+
+    @Test
+    public void createNewAddWithEmptyFields () {
+        driver.get(BASE_URL);
+
+        driver.findElement(By.xpath("//button[text()='Создать']")).click();
+        driver.findElement(By.xpath("//button[text()='Сохранить']")).click();
+
+        List<WebElement> errorElements = driver.findElements(By.xpath("//div[@role='group']//div"));
+        int errorCounter = errorElements.size();
+
+        Assert.assertEquals(errorCounter, 4, "Ожидалось 4 сообщения об ошибке, найдено: " + errorCounter);
     }
 }
