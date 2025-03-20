@@ -9,30 +9,30 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class SergeyTest {
+public class group_push_and_pray {
 
     @Test
-    public void testSelenium() throws InterruptedException {
-        WebDriverManager.chromedriver().setup();
-
+    public void testGoogle() throws InterruptedException {
         WebDriver driver = new ChromeDriver();
 
-        driver.get("https://www.selenium.dev/selenium/web/web-form.html");
+        driver.get("https://www.goodfon.ru/");
 
-        WebElement textBox = driver.findElement(By.id("my-text-id"));
-        WebElement submitButton = driver.findElement(By.tagName("button"));
 
-        textBox.sendKeys("selenium");
-        submitButton.click();
+        WebElement strokaPoiska = driver.findElement(By.className("js-search"));
+        strokaPoiska.sendKeys(Keys.CONTROL + "a");
+        strokaPoiska.sendKeys(Keys.DELETE);
+        strokaPoiska.sendKeys("Дворцовая площадь");
 
-        Thread.sleep(1000);
+        WebElement knopka = driver.findElement(By.xpath("/html/body/div[2]/div[1]/div/div[1]/form/button"));
+        knopka.click();
 
-        WebElement message = driver.findElement(By.id("message"));
-        String value = message.getText();
 
-        assertEquals(value, "Received!");
+        String ssilka = driver.getCurrentUrl();
+
+        Assert.assertEquals(ssilka, "https://www.goodfon.ru/search/?q=%D0%94%D0%B2%D0%BE%D1%80%D1%86%D0%BE%D0%B2%D0%B0%D1%8F+%D0%BF%D0%BB%D0%BE%D1%89%D0%B0%D0%B4%D1%8C");
 
         driver.quit();
+
     }
 
 }
