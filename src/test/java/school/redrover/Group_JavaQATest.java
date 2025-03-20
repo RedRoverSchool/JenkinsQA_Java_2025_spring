@@ -62,15 +62,13 @@ public class Group_JavaQATest {
         driver.manage().window().maximize();
         driver.get("https://goodbeautychicago.com/");
 
-        WebElement submitButton = driver.findElement(By.xpath("//*[@id=\"post-460\"]/div/div/section[1]/div[2]/div/div/section[2]/div/div/div/div[2]/div/div/a/span/span"));
-
+        WebElement bookNowButton = driver.findElement(By.xpath("//span[contains(text(), \"Book now\")]"));
         Set<String> windowHandlesBefore = driver.getWindowHandles();
         assertEquals(windowHandlesBefore.size(), 1, "Initially more than 1 tab!");
 
-        submitButton.click();
+        bookNowButton.click();
         Thread.sleep(4000);
         Set<String> windowHandlesAfter = driver.getWindowHandles();
-
         assertEquals(windowHandlesAfter.size(), 2, "New tab did not open!");
 
         driver.quit();
