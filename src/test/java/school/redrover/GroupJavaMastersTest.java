@@ -197,4 +197,31 @@ public class GroupJavaMastersTest {
 
         driver.quit();
     }
+
+    @Test
+    public void testForm() throws InterruptedException {
+
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://demoqa.com/");
+
+        WebElement elementButton = driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div[2]/div/div[1]"));
+        elementButton.click();
+
+        WebElement textButton = driver.findElement(By.xpath("//*[@id=\"item-0\"]"));
+        textButton.click();
+
+        WebElement nameBox = driver.findElement(By.cssSelector("#userName"));
+        nameBox.sendKeys("Maksim");
+
+        WebElement submitButton = driver.findElement(By.cssSelector("#submit"));
+        submitButton.click();
+
+        WebElement name = driver.findElement(By.cssSelector("#name"));
+        String nameText = name.getText();
+
+        Assert.assertEquals(nameText, "Name:Maksim");
+
+        driver.quit();
+    }
 }
