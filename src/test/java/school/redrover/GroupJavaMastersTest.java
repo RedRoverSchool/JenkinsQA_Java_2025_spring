@@ -199,7 +199,7 @@ public class GroupJavaMastersTest {
     }
 
     @Test
-    public void testForm() throws InterruptedException {
+    public void testForm(){
 
         WebDriver driver = new ChromeDriver();
 
