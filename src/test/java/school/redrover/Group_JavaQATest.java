@@ -158,7 +158,7 @@ public class Group_JavaQATest {
     }
 
     @Test
-    public void testForm() throws InterruptedException {
+    public void testForm() {
 
         WebDriver driver = new ChromeDriver();
 
