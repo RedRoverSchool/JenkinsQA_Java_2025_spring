@@ -1,5 +1,6 @@
 package school.redrover;
 
+import com.google.errorprone.annotations.RestrictedApi;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -8,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class MainTest {
 
@@ -32,6 +34,31 @@ public class MainTest {
 
         assertEquals(value, "Received!");
 
+        driver.quit();
+    }
+    @Test
+    public void testLockedOutUserLogin() throws InterruptedException {
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://www.saucedemo.com");
+
+        String title = driver.getTitle();
+        assertEquals(title, "Swag Labs");
+
+        WebElement username = driver.findElement(By.id("user-name"));
+        username.sendKeys("locked_out_user");
+
+        WebElement password = driver.findElement(By.id("password"));
+        password.sendKeys("secret_sauce");
+
+        WebElement loginButton = driver.findElement(By.id("login-button"));
+        loginButton.click();
+
+        Thread.sleep(1000);
+
+        WebElement errorMessage = driver.findElement(By.xpath("//h3"));
+        assertTrue(errorMessage.isDisplayed());
+
+        Thread.sleep(1000);
         driver.quit();
     }
 
