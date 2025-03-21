@@ -406,8 +406,6 @@ public class GroupCodeCraftTest {
     @Test
     public void testDemoQa() throws InterruptedException {
 
-        WebDriver driver = new ChromeDriver();
-
         driver.get("https://demoqa.com/");
 
         WebElement buttForms = driver.findElement(By.xpath("/html/body/div[2]/div/div/div[2]/div/div[2]/div/div[1]"));
@@ -452,8 +450,6 @@ public class GroupCodeCraftTest {
         WebElement answerEmail = driver.findElement(By.xpath("/html/body/div[2]/div/div/div/div[2]/div[2]/form/div[6]/div/p[2]"));
         String getEmail = answerEmail.getText();
         Assert.assertEquals(getEmail, "Email:ivanovich@yahoo.com");
-
-        driver.quit();
     }
 
     @Test
