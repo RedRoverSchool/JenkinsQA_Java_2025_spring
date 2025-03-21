@@ -510,9 +510,7 @@ public class GroupCodeCraftTest {
         driver.findElement(By.xpath("//div[@id='page']//label[contains(@class, 'top-srch-trigger')]")).click();
 
         driver.findElement(By.id("txtHeaderSearch")).sendKeys("learning english");
-        WebElement searchButton = driver.findElement(By.tagName("button"));
-
-        searchButton.click();
+        driver.findElement(By.tagName("button")).click();
 
         WebElement title = driver.findElement(By.xpath("//div[@id='search-results']//li[1]//h4"));
         String titleText = title.getText();
