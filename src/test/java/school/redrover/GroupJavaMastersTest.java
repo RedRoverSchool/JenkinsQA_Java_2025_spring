@@ -302,4 +302,56 @@ public class GroupJavaMastersTest {
 
         driver.quit();
     }
+
+
+    @Test
+    public void Test2(){
+
+        WebDriver driver = new ChromeDriver();
+
+        driver = new ChromeDriver();
+
+        driver.get("https://www.saucedemo.com");
+        driver.getTitle();
+
+        WebElement username = driver.findElement(By.id("user-name"));
+        username.sendKeys("standard_user");
+
+        WebElement password = driver.findElement(By.id("password"));
+        password.sendKeys("secret_sauce");
+
+        WebElement login = driver.findElement(By.id("login-button"));
+        login.click();
+
+        WebElement products = driver.findElement(By.className("title"));
+        String value = products.getText();
+        Assert.assertEquals(value, "Products");
+
+        driver.quit();
+
+    }
+    @Test
+
+    public void Test3AddRemovetoCart() {
+        WebDriver driver;
+
+        driver = new ChromeDriver();
+
+        driver.get("https://www.saucedemo.com/");
+        driver.findElement(By.xpath("//*[@id=\"user-name\"]")).sendKeys("standard_user");
+        driver.findElement(By.cssSelector("#password")).sendKeys("secret_sauce");
+        driver.findElement(By.xpath("//*[@id=\"login-button\"]")).click();
+
+        driver.findElement(By.id("add-to-cart-sauce-labs-fleece-jacket")).click();
+
+        driver.findElement(By.className("shopping_cart_link")).click();
+        driver.findElement(By.xpath("//*[@id=\"remove-sauce-labs-fleece-jacket\"]")).click();
+        driver.findElement(By.cssSelector("#continue-shopping")).click();
+
+        Assert.assertEquals((driver.findElement(By.className("title")).getText()), "Products");
+
+        driver.quit();
+    }
+
+
 }
