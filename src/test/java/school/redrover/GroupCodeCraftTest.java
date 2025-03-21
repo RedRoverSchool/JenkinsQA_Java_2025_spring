@@ -504,16 +504,14 @@ public class GroupCodeCraftTest {
     }
 
     @Test
-    public void testTitleEnPodcast() throws InterruptedException {
+    public void testTitleEnPodcast() {
 
-        driver = new ChromeDriver();
         driver.get("https://learningenglish.voanews.com/p/5610.html");
         driver.findElement(By.xpath("//div[@id='page']//label[contains(@class, 'top-srch-trigger')]")).click();
 
-        WebElement textBox = driver.findElement(By.id("txtHeaderSearch"));
+        driver.findElement(By.id("txtHeaderSearch")).sendKeys("learning english");
         WebElement searchButton = driver.findElement(By.tagName("button"));
 
-        textBox.sendKeys("learning english");
         searchButton.click();
 
         WebElement title = driver.findElement(By.xpath("//div[@id='search-results']//li[1]//h4"));
@@ -521,7 +519,6 @@ public class GroupCodeCraftTest {
 
         Assert.assertEquals(titleText, "Learning English Podcast");
 
-        driver.quit();
     }
 
     @Test
