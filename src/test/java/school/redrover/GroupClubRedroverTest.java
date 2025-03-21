@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class GroupClubRedroverTest {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--window-size=1920,1080");
         driver = new ChromeDriver(options);
+        driver.get(BASE_URL);
 
     }
 
@@ -62,7 +64,6 @@ public class GroupClubRedroverTest {
 
     @Test(dataProvider = "pageData", description = "Verify the functionality of all links on HomePage")
     void verifyHomePageLinks(String chapterName, String path, String title) {
-        driver.get(BASE_URL);
         driver.findElement(By.xpath("//h5[text() = '" + chapterName + "']/../a[@href = '" + path + "']")).click();
 
         String actualUrl = driver.getCurrentUrl();
@@ -73,15 +74,49 @@ public class GroupClubRedroverTest {
 
     @Test(description = "Verify the functionality of all links on HomePage another way")
     void verifyHomePageLinksAnotherWay() {
-        driver.get(BASE_URL);
         List<WebElement> chapters = driver.findElements(By.cssSelector(".card h5"));
-        assertEquals(chapters.size(),6);
+        assertEquals(chapters.size(), 6);
 
         List<WebElement> links = driver.findElements(By.cssSelector(".card a"));
         for (WebElement link : links) {
             link.click();
             driver.navigate().back();
         }
-        assertEquals(links.size(),27);
+        assertEquals(links.size(), 27);
+    }
+
+    @Test(description = "Verify that all selects in the form function correctly and allow valid user interactions")
+    void verifySelects() throws InterruptedException {
+        driver.findElement(By.xpath("//a[@href = 'web-form.html']")).click();
+
+        Select select = new Select(driver.findElement(By.name("my-select")));
+
+        List<WebElement> options = select.getOptions();
+        assertEquals(options.size(), 4, "Dropdown should contain exactly 4 options.");
+
+        List<WebElement> selectedOptions = select.getAllSelectedOptions();
+        assertEquals(selectedOptions.size(), 1,
+                "Only one option should be selected by default.");
+
+        assertEquals(select.getFirstSelectedOption().getText(),
+                "Open this select menu", "Default option text mismatch.");
+
+        select.selectByValue("1");
+        assertEquals(select.getFirstSelectedOption().getText(),
+                "One", "Option 'One' was not selected correctly.");
+
+        select.selectByIndex(2);
+        assertEquals(select.getFirstSelectedOption().getText(),
+                "Two", "Option 'Two' was not selected correctly.");
+
+        select.selectByValue("3");
+        assertEquals(select.getFirstSelectedOption().getText(),
+                "Three", "Option 'Three' was not selected correctly.");
+
+        select.selectByIndex(0);
+        assertEquals(select.getFirstSelectedOption().getText(),
+                "Open this select menu", "Dropdown did not reset correctly.");
+
+        select.deselectAll();
     }
 }
