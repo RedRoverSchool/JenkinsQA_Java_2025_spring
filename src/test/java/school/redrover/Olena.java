@@ -15,7 +15,6 @@ public class Olena {
         WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver();
 
-
         driver.get("https://magento.softwaretestingboard.com/");
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.findElement(By.id("ui-id-5")).click();
@@ -24,8 +23,6 @@ public class Olena {
         driver.findElement(By.xpath("//span[text()='Add to Wish List']")).click();
 
         driver.quit();
-
-
     }
 
 }
