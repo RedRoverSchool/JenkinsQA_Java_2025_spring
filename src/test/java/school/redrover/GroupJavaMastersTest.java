@@ -234,7 +234,7 @@ public class GroupJavaMastersTest {
 
         Thread.sleep(2000);
 
-        Assert.assertEquals(driver.findElement(By.xpath("//p[@id='message']")).getText(),"Received!");
+        Assert.assertEquals(driver.findElement(By.xpath("//p[@id='message']")).getText(), "Received!");
 
         driver.quit();
     }
@@ -253,12 +253,12 @@ public class GroupJavaMastersTest {
         driver.findElement(By.xpath("//option[@value='dd4']")).click();
         driver.findElement(By.xpath("//input[@value='submit']")).click();
 
-        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valueusername']")).getText(),"student");
+        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valueusername']")).getText(), "student");
         Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valuepassword']")).getText(), "123456789");
-        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valuecheckboxes0']")).getText(),"cb1");
-        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valueradioval']")).getText(),"rd2");
-        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valuemultipleselect0']")).getText(),"ms1");
-        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valuedropdown']")).getText(),"dd4");
+        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valuecheckboxes0']")).getText(), "cb1");
+        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valueradioval']")).getText(), "rd2");
+        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valuemultipleselect0']")).getText(), "ms1");
+        Assert.assertEquals(driver.findElement(By.xpath("//li[@id='_valuedropdown']")).getText(), "dd4");
 
         driver.quit();
     }
@@ -299,6 +299,29 @@ public class GroupJavaMastersTest {
         driver.findElement(By.xpath("//input[@id='login-button']")).click();
 
         Assert.assertEquals(driver.findElement(By.xpath("//img[@alt='Sauce Labs Backpack']")).getDomAttribute("src"), "/static/media/sl-404.168b1cce.jpg");
+
+        driver.quit();
+    }
+
+    @Test
+
+    public void Test3AddRemoveCart() {
+        WebDriver driver;
+
+        driver = new ChromeDriver();
+
+        driver.get("https://www.saucedemo.com/");
+        driver.findElement(By.xpath("//*[@id=\"user-name\"]")).sendKeys("standard_user");
+        driver.findElement(By.cssSelector("#password")).sendKeys("secret_sauce");
+        driver.findElement(By.xpath("//*[@id=\"login-button\"]")).click();
+
+        driver.findElement(By.id("add-to-cart-sauce-labs-fleece-jacket")).click();
+
+        driver.findElement(By.className("shopping_cart_link")).click();
+        driver.findElement(By.xpath("//*[@id=\"remove-sauce-labs-fleece-jacket\"]")).click();
+        driver.findElement(By.cssSelector("#continue-shopping")).click();
+
+        Assert.assertEquals((driver.findElement(By.className("title")).getText()), "Products");
 
         driver.quit();
     }
