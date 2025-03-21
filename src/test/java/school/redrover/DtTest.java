@@ -12,6 +12,8 @@ public class DtTest {
 
         WebDriver driver = new ChromeDriver();
         driver.get ("khl.ru");
+
+
         WebElement searchButton = driver.findElement();
         searchButton.click();
 
