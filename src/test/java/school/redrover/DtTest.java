@@ -16,18 +16,13 @@ public class DtTest {
         WebElement searchButton = driver.findElement();
         searchButton.click();
 
-
-
         WebElement searchButton = driver.findElement();
         searchButton.click();
 
         WebElement searchButton = driver.findElement();
         searchButton.click();
-
-
 
         Assert.assertEquals();
         driver.quit();
     }
-
 }
