@@ -587,28 +587,25 @@ public class GroupCodeCraftTest {
     }
 
     @Test
-    public void testDQARadioButton() throws InterruptedException {
+    public void testDemoQARadioButton() throws InterruptedException {
         driver.get("https://demoqa.com");
 
         WebElement firstBlock =
                 driver.findElement(By.xpath("//*[@id=\"app\"]/div/div/div[2]/div/div[1]"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", firstBlock);
-        Thread.sleep(500);
         firstBlock.click();
 
         Thread.sleep(500);
-        WebElement sButton = driver.findElement(By.id("item-2"));
-        sButton.click();
+        driver.findElement(By.id("item-2")).click();
 
-        Thread.sleep(500);
-        WebElement radioButton = new WebDriverWait(driver, Duration.of(10, SECONDS))
+        WebElement radioButton = new WebDriverWait(driver, Duration.of(5, SECONDS))
                 .until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='impressiveRadio']")));
         radioButton.click();
 
         Thread.sleep(500);
-        WebElement message = driver.findElement(By.xpath("//div[2]/div[2]/p/span"));
-        String value = message.getText();
-        Assert.assertEquals(value, "Impressive");
+        Assert.assertEquals(
+                driver.findElement(By.xpath("//div[2]/div[2]/p/span")).getText(),
+                "Impressive");
     }
 
     @Test
@@ -619,14 +616,11 @@ public class GroupCodeCraftTest {
                 driver.findElement(By.xpath("//div[1]/div/div/a[3]"));
         dropDown.click();
 
-        Thread.sleep(500);
-        WebElement sButton = driver.findElement(By.id("my-dropdown-1"));
-        sButton.click();
+        driver.findElement(By.id("my-dropdown-1")).click();
 
-        Thread.sleep(500);
-        WebElement text = driver.findElement(By.xpath("//div[1]/div/ul/li[3]/a"));
-        String value = text.getText();
-        Assert.assertEquals(value, "Something else here");
+        Assert.assertEquals(
+                driver.findElement(By.xpath("//div[1]/div/ul/li[3]/a")).getText(),
+                "Something else here");
     }
 
     @Test
@@ -651,15 +645,12 @@ public class GroupCodeCraftTest {
     public void testFakeStoreShopping() throws InterruptedException, AWTException {
         driver.get("https://letcode.in/home");
 
-        WebElement tema =
-                driver.findElement(By.xpath("//*[@id=\"toggle-theme\"]"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", tema);
-        tema.click();
+        driver.findElement(By.xpath("//*[@id=\"toggle-theme\"]")).click();
 
+        Thread.sleep(500);
         WebElement monitor =
                 driver.findElement(By.xpath("//div[14]/div/div[1]/figure/img"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", monitor);
-        Thread.sleep(500);
         monitor.click();
 
         WebElement inCart = wait.until
@@ -668,17 +659,13 @@ public class GroupCodeCraftTest {
         Thread.sleep(500);
         inCart.click();
 
-        WebElement navBarWorkSpace = driver.findElement(By.xpath("//a[text()='Work-Space']"));
-        navBarWorkSpace.click();
+        driver.findElement(By.xpath("//a[text()='Work-Space']")).click();
 
-        WebElement wSPoM = driver.findElement(By.xpath("//a[text()=' Page Object Model ']"));
-        wSPoM.click();
+        driver.findElement(By.xpath("//a[text()=' Page Object Model ']")).click();
 
-        WebElement cart = driver.findElement(By.xpath("//i[contains(@class, 'fas') and contains(@class, 'fa-cart-shopping')]"));
-        cart.click();
+        driver.findElement(By.xpath("//i[contains(@class, 'fas') and contains(@class, 'fa-cart-shopping')]")).click();
 
-        WebElement minus = driver.findElement(By.xpath("//button[text()='-']"));
-        minus.click();
+        driver.findElement(By.xpath("//button[text()='-']")).click();
 
         WebElement checkoutButton = new WebDriverWait(driver, Duration.of(5, SECONDS))
                 .until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Checkout']")));
@@ -689,8 +676,9 @@ public class GroupCodeCraftTest {
         robot.keyRelease(KeyEvent.VK_ENTER);
 
         Thread.sleep(5000);
-        WebElement message1 = driver.findElement(By.xpath("//p[@class='title is-4']"));
-        Assert.assertEquals(message1.getText(), "Your cart is empty");
+        Assert.assertEquals(
+                driver.findElement(By.xpath("//p[@class='title is-4']")).getText(),
+                "Your cart is empty");
     }
 
 }
