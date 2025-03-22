@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class SergeyTest {
+public class JavaExplorersTest {
 
     @Test
     public void testSelenium() throws InterruptedException {
