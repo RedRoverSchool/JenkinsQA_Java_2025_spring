@@ -129,4 +129,15 @@ public class BozhevaTest {
         WebElement receivedMessage = driver.findElement(By.cssSelector("div.col-12.py-2"));
         Assert.assertTrue(receivedMessage.isDisplayed(), "Текст 'Received!' не найден!");
     }
+
+    @Test
+    public void testSubmitButton2() {
+        driver.findElement(By.tagName("button")).click();
+        WebElement element = driver.findElement(By.cssSelector("h1.display-6"));
+        Assert.assertEquals(element.getText(), "Form submitted", "Текст 'Form submitted' не найден!");
+
+        WebElement receivedMessage = driver.findElement(By.cssSelector("div.col-12.py-2"));
+        Assert.assertTrue(receivedMessage.isDisplayed(), "Текст 'Received!' не найден!");
+    }
+
 }
