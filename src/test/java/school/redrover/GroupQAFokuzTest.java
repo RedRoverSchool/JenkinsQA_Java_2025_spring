@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.testng.Assert.assertEquals;
+
 
 public class GroupQAFokuzTest {
 
@@ -268,6 +270,22 @@ public class GroupQAFokuzTest {
         driver.quit();
 
     }
+    @Test
+    public void testFokuzButtonAnfrageFurSchootin() throws InterruptedException {
 
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://fokuz.photo/");
+        Thread.sleep(1000);
 
+        driver.findElement(By.xpath("//a[text()='Frag mich mal']")).click();
+        driver.findElement(By.xpath("//a[contains(@class, 'button')]"));
+        driver.findElement(By.xpath("//a[@href='#g-contenttabs-item-contenttabs-3854-1']")).click();
+        driver.findElement(By.xpath("//a[@href='#g-contenttabs-item-contenttabs-3854-2']")).click();
+
+        String info = driver.getTitle();
+        assertEquals(info,"Demnächst verfügbar");
+
+        driver.quit();
+    }
 }
+
