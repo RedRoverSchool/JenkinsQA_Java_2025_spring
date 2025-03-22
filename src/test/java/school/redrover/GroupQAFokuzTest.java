@@ -31,6 +31,27 @@ public class GroupQAFokuzTest {
         driver = new ChromeDriver(options);
     }
 
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+
+    @Test
+    public void testFalseLoginDatartCz() throws InterruptedException {
+        driver.get("https://www.datart.cz/");
+        driver.findElement(By.id("c-p-bn")).click();
+
+        driver.findElement(By.xpath("//*[@id='head-login-sign-up']")).click();
+        driver.findElement(By.xpath("//*[@id='frm-login']")).sendKeys("test@example.com");
+        driver.findElement(By.xpath("//*[@id='frm-password']")).sendKeys("test123");
+        driver.findElement(By.xpath("//button[@class='btn btn-login']")).click();
+        Thread.sleep(1000);
+        Assert.assertEquals(driver.findElement(By.xpath("//div[@class='errorMessage mb-3']"))
+                .getText(),"Zadali jste špatné údaje. Zkuste to znovu.","Вы не вошли");
+    }
+
     @Test
     public void testWebForm() {
         driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
@@ -173,12 +194,7 @@ public class GroupQAFokuzTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//button[@id='closeLargeModal']"))).click();
     }
 
-    @AfterMethod
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
+
 
     @Test
     public void testClickPinterest() throws InterruptedException {

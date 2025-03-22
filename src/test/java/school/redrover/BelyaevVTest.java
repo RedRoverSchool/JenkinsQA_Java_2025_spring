@@ -22,14 +22,14 @@ public class BelyaevVTest {
         searchButton.click();
 
         WebElement searchText = driver.findElement(By.className("heading-search__input"));
-        searchText.sendKeys("Api");
+        searchText.sendKeys("Api1110");
 
         searchButton.click();
 
         WebElement foundText = driver.findElement(By.className("search__title"));
         String resultSearch = foundText.getText();
 
-        Assert.assertEquals("api", resultSearch);
+        Assert.assertEquals(resultSearch, "apin");
 
         driver.quit();
     }
@@ -47,7 +47,7 @@ public class BelyaevVTest {
         WebElement foundText = driver.findElement(By.xpath("(//h1[@class='search__title'])"));
         String foundSearchTitle = foundText.getText();
 
-        Assert.assertEquals("Как решить", foundSearchTitle);
+        Assert.assertEquals(foundSearchTitle, "Как решить");
 
         driver.quit();
     }

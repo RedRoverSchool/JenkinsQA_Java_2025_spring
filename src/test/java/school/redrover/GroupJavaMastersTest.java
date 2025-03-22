@@ -22,7 +22,6 @@ public class GroupJavaMastersTest {
     @Test
     public void testLogin() {
         WebDriver driver = new ChromeDriver();
-
         driver.get("https://www.saucedemo.com/");
 
         WebElement userNameTextField = driver.findElement(By.id("user-name"));
@@ -63,7 +62,6 @@ public class GroupJavaMastersTest {
     @Test
     public void testLockedUserLogin() {
         WebDriver driver = new ChromeDriver();
-
         driver.get("https://www.saucedemo.com/");
 
         WebElement userNameTextField = driver.findElement(By.xpath("//form/div[1]/input[@class='input_error form_input']"));
@@ -190,9 +188,9 @@ public class GroupJavaMastersTest {
         List<WebElement> hamburgerItems = driver.findElements(By.cssSelector(".bm-item.menu-item"));
         List<String> expectedItems = new ArrayList<>(Arrays.asList("All Items", "About", "Logout", "Reset App State"));
 
-        Assert.assertEquals(hamburgerItems.size(), 4);
         Thread.sleep(100);
 
+        Assert.assertEquals(hamburgerItems.size(), 4);
         for (int i = 0; i < hamburgerItems.size(); i++) {
             Assert.assertEquals(hamburgerItems.get(i).getText(), expectedItems.get(i));
         }
@@ -303,6 +301,7 @@ public class GroupJavaMastersTest {
         driver.quit();
     }
 
+  VS/test2.2
     @Test
 
     public void Test3AddRemoveCart() {
@@ -325,4 +324,35 @@ public class GroupJavaMastersTest {
 
         driver.quit();
     }
+
+    @Test
+    public void Test2(){
+
+        WebDriver driver = new ChromeDriver();
+
+        driver = new ChromeDriver();
+
+        driver.get("https://www.saucedemo.com");
+        driver.getTitle();
+
+        WebElement username = driver.findElement(By.id("user-name"));
+        username.sendKeys("standard_user");
+
+        WebElement password = driver.findElement(By.id("password"));
+        password.sendKeys("secret_sauce");
+
+        WebElement login = driver.findElement(By.id("login-button"));
+        login.click();
+
+        WebElement products = driver.findElement(By.className("title"));
+        String value = products.getText();
+        Assert.assertEquals(value, "Products");
+
+        driver.quit();
+
+
+
+    }
+
+main
 }
